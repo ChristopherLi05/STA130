@@ -1,1 +1,172 @@
+---
+title: "STA130 Week 1 Class - L0201"
+author: "Nathalie Moon and Josh Speagle"
+output:
+  pdf_document: default
+  html_document: default
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Supplementary Materials and R Code 
+
+## What to do when you first open a new RMarkdown (.Rmd) document like this
+
+**'Knit' it, just to make sure it works!**
+
+To do this, click on "Knit" at the top of this window. This should generate 
+a .pdf file, saved in the same folder (aka directory) as the .Rmd file.
+If you don't get a pdf file, make sure that at the top of your .Rmd file
+it says `pdf_document` under `output`.
+
+
+## Using R as a calculator
+
+You can use R as a calculator by typing one line at a time in the 
+'Console' window (bottom left panel) and pressing Enter.
+**Try doing the calculations in the console**:
+
+- What is 5 + 2?
+- What is 2^3?
+- What does `c(1,2,3) * 2` do?
+- What does `length(c("a","b","c))` do?
+
+We could also insert a new R code chunk by clicking on the green plus sign 
+in the top right corner of this panel. **Let's try to copy over
+the calculations from before in the Console into a new `R` code chunk
+below this paragraph.**
+
+When we write code in a code chunk, we can save it (this is how you'll work
+on your problem sets!). It will also run when you try and knit a file.
+
+We can also run code chunks manually by clicking on the green icon at the
+top right of a code chunk. **Let's try to see if we get the same outputs if
+we do that as when we ran it in the Console.**
+
+
+## Install and load packages
+
+We will use the `tidyverse` package often in this course.
+If you're working on JupyterHub, it should already be downloaded. However,
+if you're on your own computer you'll need to download it the first time 
+by running `install.packages("tidyverse")` in a code chunk or the Console. 
+
+In the code chunk below, we'll install the `tidyverse` package using
+`install.packages("tidyverse")` and then open it using the 
+`library(tidyverse)` command. 
+
+```{r}
+# install.packages("tidyverse") # run this line if not already installed
+library(tidyverse)
+```
+
+If you run the above code chunk without `tidyverse` installed, you might get
+an error message! While these may be difficult to understand for now,
+as you gain more experience in R they will become more helpful for understanding
+how and why your code might be failing to run properly.
+
+Also, notice that the `#` signs turns the subsequent text into a 'comment' 
+rather than executable code. This can be useful for trying to isolate bugs when
+working (by removing/adding lines to a code chunk and seeing what happens)
+as well as by adding in additional explanations to help describe what your
+code is doing.
+
+**Let's add some comments to help explain what each line in the code chunk
+above is doing for future reference.**
+
+## Loading data in R
+
+### Built-in datasets
+
+Some packages include data when you load them in. This is great, since it
+means you don't have to load it in separately and can just access it!
+
+Here are two functions that are useful when you start working with new data:
+  - `glimpse()`
+  - `head()`
+  
+In both cases, you need to put the name of the dataset object in the
+parentheses (note that R is case sensitive).
+
+One dataset available in R is called `Orange` and it has data on the 
+growth of orange trees. 
+
+When a dataset is available in R, you can get information about 
+it by typing `?` and then its name. **Run the example in the cell provided
+below to see how `?`, `glimpse()`, and `head()` work.**
+
+```{r}
+# Remember lines that start with a '#' symbol are comments and won't be run
+# Get information about the built in dataset called Orange
+# ?Orange
+
+# Look at the data using glimpse() and head()
+glimpse(Orange)
+head(Orange)
+```
+
+\newpage
+## Loading data from a file (e.g. .csv)
+
+You can also load data from a file (e.g. `.csv` spreadsheet) which is saved 
+on your computer using the `read_csv()` function. The filename must be 
+specified in the parentheses within quotation marks. For example,
+`read_csv("datafile.csv")`.
+
+**In the R code chunk below, use the `read_csv()` function to read in the
+".csv" file.**
+
+```{r}
+student_data <- read_csv("students.csv")
+```
+
+Notice that here we have also assigned the data to a specific **variable**,
+which allows us to save the output so we can access it later. This makes
+`student_data` similar to `Orange` from earlier.
+
+When you run `read_csv()`, you may often get warnings in \textcolor{red}{red}.
+However, in general this isn't a problem -- it's just the `read_csv` function
+trying to guess what type each variable has, how the values are separated, etc.
+since we didn't tell it some of these things ahead of time.
+
+Let's now investigate our dataset a bit further using the cell below.
+
+```{r}
+student_data
+head(student_data)
+
+# It can also be useful to look at data using `glimpse()`, 
+# especially when there are lots of variables.
+glimpse(student_data)
+```
+
+**Based on these findings, try to answer the following questions by filling
+in the cell below:**
+
+```{r}
+# How many variables are there?
+q1 <- NULL
+
+# How many observations are there?
+q2 <- NULL
+
+# What is the name of the first variable?
+q3 <- "NULL"
+
+# What is the major of the 3rd student?
+q4 <- "NULL"
+
+# What types of variables do we have in these data?
+# Hint: there are two of them and the information is provided in the cell above
+q5 <- c("NULL", "NULL")
+
+q1
+q2
+q3
+q4
+q5
+```
+
+And with that, our first foray into R is done!
