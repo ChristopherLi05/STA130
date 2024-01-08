@@ -15,7 +15,7 @@ library(tidyverse)
 
 ## How do I hand in my solutions and how do I check my work
 You will submit your solutions (.Rmd and .pdf) on MarkUs at the following link: https://markus4.teach.cs.toronto.edu/2024-01/courses/1
-Submissions are due at 11:59pm on Thursdays; see (Quercus page)[https://q.utoronto.ca/courses/341136/pages/course-schedule-and-materials] for the specific deadline for each problem set.
+Submissions are due at 5pm on Thursdays; see (Quercus page)[https://q.utoronto.ca/courses/341136/pages/course-schedule-and-materials] for the specific deadline for each problem set.
 
 Usually when you do an assignment, you don't find out whether your answers are correct until *after* the deadline, when you get your grade back.
 However, using MarkUs, you can submit your work before the deadline and run tests to check your solutions!  
