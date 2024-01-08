@@ -40,25 +40,25 @@ However, using MarkUs, you can submit your work before the deadline and run test
 **(a) What is 3257 times 494. Save the answer in the variable below called Q1a.**
 ```{r}
 # Replace NULL with your answer below
-Q1a <- NULL
+Q1a <- 3257 * 494
 ```
 
 **(b) What is 112 divided by 4? Save the answer in the variable below called Q1b**
 ```{r}
 # replace NULL with your answer below
-Q1b <- NULL
+Q1b <- 112 / 4
 ```
 
 **(c) What is the sum of all positive integers from 1 to 10? Save the answer in the variable below called Q1c.**
 ```{r}
 # Replace NULL with your answer
-Q1c <- NULL
+Q1c <- 1 + 2 + 3 + 4 + 5 + 6 + 7 + 8 + 9 + 10
 ```
 
 **(d) What is 0.05 cubed (that is, the third power of 0.05)? Save the answer in the variable below called Q1d.**
 ```{r}
 # Replace NULL with your answer
-Q1d <- NULL
+Q1d <- 0.05 ^ 3
 ```
 
 
@@ -78,11 +78,11 @@ length(courses)
 
 **Your answer:** 
 
-
+Length takes in a vector and returns the amount of values in it.
 
 ## (b) Suppose the student decides to take an additional course: BIO100. Create a new vector with all the courses from before, but also this new course.  Save the answer in the variable below called Q2 (replace NULL with your answer). 
 ```{r}
-Q2 <- NULL
+Q2 <- c("STA130", "MAT135", "ECO101", "CS121", "PHY100", "BIO100")
 Q2
 ```
 
@@ -96,13 +96,14 @@ Q2
 
 ```{r}
 # Tip: don't forget to put quote marks around the name of the dataset inside the function
-avatar <- NULL
+avatar <- read_csv("avatar.csv")
 ```
 
 ## b) We have learned two functions this week that let us quickly get an idea of our data. Apply both of them to the avatar data.
 
 ```{r}
-
+glimpse(avatar)
+head(avatar)
 
 ```
 
@@ -119,10 +120,10 @@ avatar <- NULL
 - What is the value of the `character` variable for the first observation in the `avatar` tibble? Save your answer in the R object below called `first_value_of_character` (replace NULL with your answer). Hint: when your answer is a word, make sure to put it in quotation marks.
 
 ```{r}
-num_observations <- NULL
-num_variables <- NULL
-third_variable_name <- NULL
-first_value_of_character <- NULL
+num_observations <- 9992
+num_variables <- 10
+third_variable_name <- "chapter"
+first_value_of_character <- "Katara"
 ```
 
 
@@ -135,7 +136,8 @@ first_value_of_character <- NULL
 
 ## (a) Is this sample representative of all cats who suffer falls?
 
-
+No, this is not representative of all the cats who suffer falls. We are not including the cats that fell and subsequently died from the impact. However, I am not sure how significant this number is, as there are animals that can easily survive large falls 100% of the time (i.e squirrels) because their terminal velocity is not high enough to kill them.
 
 ## (b) Do you expect that the average number of injuries for cats suffering falls calculated from this sample will be close to the true value?
 
+After some research, I think there are plenty of confounding variables that may affect this answer. Studies have shown that cats can usually survive 10 story falls, however there is a lack of research for cats falling from higher stories. However considering how cats usually don't fall from such high heights (which very well could be my own availability bias), I don't think the results are signifigant enough. 
