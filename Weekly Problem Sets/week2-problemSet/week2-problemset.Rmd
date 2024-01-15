@@ -24,7 +24,7 @@ Submissions are due at 5pm on Thursdays; see [Quercus page](https://q.utoronto.c
 Usually when you do an assignment, you don't find out whether your answers are correct until *after* the deadline, when you get your grade back.
 However, using MarkUs, you can submit your work before the deadline and run tests to check your solutions!  
 
-*Note:* Some parts of some questions may not be covered by tests in MarkUs, but you're still responsible for reviewing the posted solutions and make sure you understand them.
+*Note:* Some parts of some questions may not be covered by tests in MarkUs, but you're still responsible for reviewing the posted solutions and make sure you understand them. Some of these parts will also be graded in some weeks.
 
 ### What to do if a test fails on MarkUs
 
