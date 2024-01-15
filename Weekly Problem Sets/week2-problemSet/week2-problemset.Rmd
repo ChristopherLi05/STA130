@@ -58,22 +58,35 @@ artwork <- read_csv("artwork_sample.csv")  # read in the data
 ### (a) Use the `glimpse()` function to view properties of the `artwork` data set. How many observations does it include? How many variables are measured for each observation? Replace `NULL` with your answers in the code chunk below to save your answers in `Q1a_number_of_variables` and `Q1a_number_of_observations`.
 
 ```{r}
-Q1a_number_of_variables <- NULL
-Q1a_number_of_observations <- NULL
+glimpse(artwork)
+
+Q1a_number_of_variables <- 10
+Q1a_number_of_observations <- 1000
 ```
 
 **Write 1-2 sentences describing the sample using this information and the context.**
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
-
+There are 1000 different art pieces with 10 different observations for each. 
 
 ### (b) Create 3 histograms to explore the distribution of years of creation for this sample of pieces of art: (i) one with 3 bins, (ii) one with 30 bins, and (iii) one with 150 bins; make sure to specify meaningful axis labels where appropriate. Which of these histograms is most appropriate to describe the distribution of the artworks' years of creation? Why? Write a few sentences describing the distribution based on the histogram you chose as most appropriate.
 
 ```{r}
-# Create your plots below
-hist1 <- NULL
-hist2 <- NULL
-hist3 <- NULL
+# Create your artwork below
+hist1 <- artwork %>% ggplot(aes(x = year)) +
+  geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 3) +
+  labs(x = "Year Created")
+hist2 <- artwork %>% ggplot(aes(x = year)) +
+  geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 30) +
+  labs(x = "Year Created")
+hist3 <- artwork %>% ggplot(aes(x = year)) +
+  geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 150) +
+  labs(x = "Year Created")
 
 # the gridExtra package allows for plots to be 
 # arranged in a grid layout - we'll load it here
@@ -85,23 +98,25 @@ grid.arrange(hist1, hist2, hist3, nrow=1, ncol=3)
 
 **Which histogram is most appropriate to visualize these data?**
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
+I think the histogram with 30 points is the most appropriate way to visualize the data. 
 
 **Justify your answer above in a few sentences. Hint: Don't forget to refer to the 3 aspects of quantitive distributions and comment on how each plot lets you visualize each aspect.**
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
-
+There are 3 aspects that we need to look at when judging these plots: shape, center, and spread. With only 3 bins, it is hard to determine the trend of the data and whether or not there's any peaks, and thus it's hard to see how concentrated/distributed data is from the center. With 150 bins, the chart looks like a series of jagged peaks. It is easier to see that there's 1 big peak on the left, but the (true) peak on the right is harder to see. With 30 bins however, it is quite easy to see the shape of the data and the number of peaks.
 
 ### (c) Construct a plot to visualize the distribution of the `type` variable. Make sure to specify meaningful axis labels where appropriate. Hint: If you choose a categorical variable with many different categories, you may find it useful to use `coord_flip()` to flip the bars horizontally and/or change the options in the R code chunk to make the plot large (ex: `{r, fig.height=15, fig.width=5}`). From the choices below, select the best description for the distribution of the `type` variable.
 
 
 ```{r}
-# Create your plot below
+artwork %>% ggplot(aes(x=type)) +
+  geom_bar(color = "black",
+           fill = "gray") +
+  labs(x = "Art Type")
 
 
 # Among the four descriptions below, decide which one is most accurate 
 # and replace NULL with "A", "B", "C" or "D" accordingly
-Q1c <- NULL
+Q1c <- "C"
 ```
 
 **A**: There are about twice as many line engravings than photographs, and almost twice as many photographs than watercolours.  The most common type of artwork in this sample of 1000 is watercolour.
@@ -116,26 +131,30 @@ Q1c <- NULL
 ### (d) Construct a set of three boxplots showing visual summaries of the distribution of surface area (`area`) for each type of artwork (`type`); make sure to specify meaningful axis labels where appropriate.
 
 ```{r}
-# Create your plots below
+artwork %>% ggplot(aes(x = type, y = area)) +
+  geom_boxplot(color = "black",
+               fill = "gray") +
+  labs(y = "Area", x = "Art Type")
 
 ```
 
 **Write 3-4 sentences comparing these distributions.**
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
+The median area of the photograph is higher than the median area of watercolor paintings which is higher than the median area of line engraving art pieces. Similarly, the IQR follows the same pattern: photograph's IQR > watercolor's IQR > line engraving's IQR. For all three distributions, they skewed right with many outliers higher than the median. 
 
 
 ### (e) Make a scatterplot showing the `width` versus `height` for each type of artwork (`type`) using the `colour` and/or `facet_wrap()` option; make sure to specify meaningful axis labels where appropriate.
 
 ```{r}
-# Create your plot below
+artwork %>% ggplot(aes(x = width, y = height, color=type)) +
+  geom_point() +
+  labs(x = "Width", y = "Height")
 
 ```
 
 **Write 1-3 sentences describing any trends you see.**
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
-
+There is a pretty strong positive correlation between width and height. The relation seems to be linear. 
 
 ## [Question 2] The `ncbirths` data set is part of the `openintro` package. It consists of observations for a sample of 1000 births in North Carolina in 2004.   Type  `?ncbirths` in the R console for more information about the data and to see the definition of each variable. The code below loads the required libraries for this question and provides a glimpse of the `ncbirths` data frame.
   
@@ -152,29 +171,40 @@ glimpse(births14)
 
 ```{r}
 # In what year were these data collected?
-Q2a_year <- NULL
+Q2a_year <- 2014
 
 # What is the name of the variable with the following definition: 
 # "Weight gained by mother during pregnancy in pounds." 
 # Make sure that your answer is in quotation marks here, and 
 # remember that R is case sensitive!
-Q2a_variable <- NULL
+Q2a_variable <- "gained"
 ```
 
 ### (b) Before even doing any analysis, it is good to consider whether the data in question might have any strong bias that could impact any conclusions you may draw. Based on the information contained documentation (particularly in `Description` and `Source`), please write 3-4 sentences either (1) arguing the dataset should be generally unbiased and representative of all births in North Carolina or, if not, (2) what potential issues there might be with the data.
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
+According to the source of this data set (for ?births14), the original set contains every birth recorded in 2014, and thus it is not merely representative, but rather is the source. Assuming that openintro picked 1000 names without replacement by random sample, then this set should be representative of all births in North Carolina in 2014. However if we want to generalize this to all births in North Carolina, we need to consider other factors, i.e. was there anything in 2014/2013 that discouraged people having children. In our case, an ebola outbreak happened in 2014 which could have discouraged children births, and thus makes this year irregular compared to other years. 
   
 ### (c) Choose two categorical variables and plot their distributions. Identify whether each of these variables is a nominal or ordinal categorical variable. Write one or two sentences interpreting each plot.  
 
 ```{r, warning=FALSE, message=FALSE, fig.height=3, fig.width=4, fig.align='center'}
-# Create your plots below
 
+gg1 <- births14 %>% ggplot(aes(x=sex)) +
+  geom_bar(color = "black",
+           fill = "gray") +
+  labs(x = "Sex of Baby")
+
+gg2 <- births14 %>% ggplot(aes(x=marital)) +
+  geom_bar(color = "black",
+           fill = "gray") +
+  labs(x = "Marital status of the mother")
+
+library(gridExtra)
+grid.arrange(gg1, gg2, nrow=1, ncol=2)
 ```
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
+Baby sex variable is a nominal variable. There were slightly more males born than females, however this difference does not seem signifigant enough.
 
-
+Marital status of the mother is also a nominal variable. There are significantly more married women giving birth than not married and its ratio is about 3:2.  
 
 
 ### (d) Consider the variable `weight`. Replace NULL below with the type of this variable (either "continuous numerical", "discrete numerical", "nominal categorical", "nominal ordinal", or "binary"). Create a plot to visualize the distribution and write 2-3 sentences describing the distribution.
@@ -182,20 +212,28 @@ Q2a_variable <- NULL
 ```{r, warning=FALSE, message=FALSE, fig.width=3, fig.height=2, fig.align='center'}
 # What is the type of this variable? 
 # Hint: Replace NULL below with the correct option above, making sure to copy exactly and to include quotation marks
-Q2d <- NULL
+Q2d <- "continuous numerical"
 
 # Create your plot below
+births14 %>% ggplot(aes(x = weight)) +
+  geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 20) +
+  labs(x = "Weight of the Baby")
 
 ```
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
-
+This distribution is unimodal and approximately normal, with a center at around 7.5 lbs. There is a slight skew left however it isn't very major. 
 
 
 ### (e) Construct a plot that shows the relationship between birth weight (`weight`) and mother's smoking status (`habit`); make sure to specify meaningful axis labels where appropriate.  
 
 ```{r}
 # Create your plot below
+births14 %>% ggplot(aes(x = habit, y = weight)) +
+  geom_boxplot(color = "black",
+               fill = "gray") +
+  labs(y = "Weight (lbs)", x = "Smoking Habit")
 
 ```
 
@@ -203,7 +241,7 @@ Q2d <- NULL
 
 ### (f) Based on your plot, would you conclude that there is a strong association, weak association, or no association between birth weight (`weight`) and mother's smoking status (`habit`)? Why or why not?
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
+There does not seem to be a strong association between birth weight and the mother's smoking status. The medians of each are roughly the same (at 7.5 lbs) and the IQR seems to be the same as well. 
 
 
 ### (g) Sometimes, a potential association could be due factors that affect both variables. These are called *confounding variables* (we will discuss these in more detail later in the course). Below, we have included a plot showing the *proportion* of births that were classified as premature or full-term (`premie`) versus smoking status (`habit`).
@@ -217,15 +255,12 @@ births14 %>% ggplot(aes(x = habit, fill=premie)) +
 
 **Does the above plot suggest that a mother's smoking habit could lead to premature births? Why or why not?**
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
-
+Yes, this plot suggests that the mother's smoking habit can lead to premature births. Approximately 25% of mothers who smoked had premie births while only about 15% of mothers who didn't smoke had premie births.
 
 
 ### (h) In general, commomn medical advice for women who are pregnant or expect to become pregnant is to stop smoking to protect the health of their baby. Based on your plot and answer above, pleased write 2-4 sentences discussing whether this advice seems justified or not.
 
-*<Type your answer to the written question here (note that R code does not run outside of the grey R code chunks).>*
-
-
+Although smoking may not directly impact the weight of the baby, it does seem to have an effect on whether or not the babie was born premie. As such, the baby may suffer health complications for that. Thus, I do think that this advice is justified.
 
 We hope this exercise helped to emphasize the importance of the ethical considerations we discussed in class when it comes to making, interpreting, and communicating data visualizations. Don't forget to review sample solutions once they are posted on Quercus.
 
