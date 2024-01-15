@@ -1,0 +1,286 @@
+---
+title: "STA130 Week 2 Class - L0101"
+author: "Nathalie Moon"
+output:
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+# Code from class slides
+
+```{r}
+# Loading coffee ratings data
+coffee_ratings <- read_csv("coffee_ratings.csv")
+glimpse(coffee_ratings)
+
+
+# Creating a histogram in R
+coffee_ratings %>% ggplot(aes(x = total_cup_points)) +
+  geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 30) +
+  labs(x = "Overall coffee ratings")
+
+
+# Playing with number of bins with old faithful data
+faithful %>% ggplot(aes(x=waiting)) +
+  geom_histogram(color="black", fill = "gray",
+                 breaks = seq(from=35, to=95, by=10)) +
+  labs(x = "Time (minutes)", 
+       title = "Time between Erruptions of Old Faithful (n=222)")
+
+faithful %>% ggplot(aes(x=waiting)) +
+  geom_histogram(color="black", fill = "gray",
+                 breaks = seq(from=35, to=95, by=3)) +
+  labs(x = "Time (minutes)", 
+       title = "Time between Erruptions of Old Faithful (n=222)")
+
+faithful %>% ggplot(aes(x=waiting)) +
+  geom_histogram(color="black", fill = "gray",
+                 breaks = seq(from=35, to=95, by=3)) +
+labs(x = "Time (minutes)", 
+       title = "Time between Erruptions of Old Faithful (n=222)") +
+  ylim(0,100)
+
+faithful %>% ggplot(aes(x=waiting)) +
+  geom_histogram(color="black", fill = "gray",
+                 breaks = seq(from=35, to=95, by=1)) +
+labs(x = "Time (minutes)", 
+       title = "Time between Erruptions of Old Faithful (n=222)")
+
+
+# Back to coffee data
+coffee_ratings %>% ggplot(aes(x = "", y = total_cup_points)) +
+  geom_boxplot(color = "black",
+               fill = "gray") +
+  labs(y = "Overall coffee rating")
+
+coffee_ratings %>% ggplot(aes(x = species, y = total_cup_points)) +
+  geom_boxplot(color = "black",
+               fill = "gray") +
+  labs(y = "Overall coffee rating")
+
+coffee_ratings %>% ggplot(aes(x = total_cup_points)) +
+  geom_histogram(color = "black", fill = "gray") +
+  labs(x = "Overall coffee rating") +
+  facet_wrap(~species)
+
+coffee_ratings %>% ggplot(aes(x = processing_method, y = total_cup_points)) +
+  geom_boxplot(color = "black",
+               fill = "gray") +
+  labs(x = "Processing method")
+
+coffee_ratings %>% ggplot(aes(x = processing_method, y = total_cup_points)) +
+  geom_boxplot(color = "black",
+               fill = "gray") +
+  labs(x = "Processing method") + 
+  coord_flip()
+  
+
+coffee_ratings %>% ggplot(aes(x = total_cup_points)) +
+  geom_histogram(color = "black", fill = "gray") +
+  labs(x = "Overall coffee rating") +
+  facet_wrap(~species)
+
+# geom_bar()
+coffee_ratings %>% ggplot(aes(x=processing_method)) +
+  geom_bar(color = "black",
+           fill = "gray") +
+  labs(x = "Processing Method")
+
+coffee_ratings %>% ggplot(aes(x=processing_method)) +
+  geom_bar(color = "black",
+           fill = "gray") +
+  labs(x = "Processing Method") +
+  coord_flip()
+
+## Another way to visualize categorical data: Grouped and stacked bar charts
+coffee_ratings %>% 
+  ggplot(aes(x=processing_method, fill=color)) +
+  geom_bar(position = "stack") +
+  xlab("Processing Method") +
+  coord_flip()
+
+coffee_ratings %>% 
+  ggplot(aes(x=processing_method, fill=color)) +
+  geom_bar(position = "dodge") +
+  xlab("Processing Method") +
+  coord_flip()
+
+coffee_ratings %>% 
+  ggplot(aes(x=color, fill=processing_method)) +
+  geom_bar(position = "stack") +
+  xlab("Color")
+
+coffee_ratings %>% 
+  ggplot(aes(x=color, fill=processing_method)) +
+  geom_bar(position = "dodge") +
+  xlab("Color")
+
+## Other ways to visualize categorical data: Pie Charts
+### Important: Note the important disadvantages of pie charts mentioned in class
+### You're not responsible for creating pie charts in STA130
+### For more advanced options: https://r-graph-gallery.com/piechart-ggplot2.html
+coffee_ratings %>% 
+  group_by(processing_method) %>%
+  summarise(n=n()) %>%
+  ggplot(aes(x="", y=n, fill=processing_method)) +
+  geom_bar(stat="identity", width=1, color="white") +
+  coord_polar("y", start=0) +
+  theme_void()
+
+
+### Scatterplots
+heights <- read_csv("heights.csv")
+glimpse(heights)
+
+heights %>% ggplot(aes(x=shoePrint, y=height)) +
+  geom_point() +
+  labs(x = "Length of shoeprint (in cm)",
+       y = "Height (in cm)")
+
+heights %>% ggplot(aes(x=shoePrint, y=height, color=sex)) +
+  geom_point() +
+  labs(x = "Length of shoeprint (in cm)",
+       y = "Height (in cm)")
+
+heights %>% ggplot(aes(x=shoePrint, y=height)) +
+  geom_point() +
+  labs(x = "Length of shoeprint (in cm)",
+       y = "Height (in cm)") +
+  facet_wrap(~sex)
+
+heights %>% ggplot(aes(x=shoePrint)) +
+  geom_histogram() +
+  labs(x = "Length of shoeprint (in cm)") +
+  facet_wrap(~sex)
+```
+
+
+```{r}
+# Examples
+
+## Accessibility
+# Generate fictional data
+set.seed(42)
+data <- data.frame(
+  X = rnorm(100),
+  Y = rnorm(100),
+  Category = sample(c("A", "B", "C"), 100, replace = TRUE)
+)
+
+# Create a scatterplot with color-only differentiation
+ggplot(data, aes(x = X, y = Y, color = Category)) +
+  geom_point() 
+
+# Create a scatterplot with improved accessibility
+ggplot(data, aes(x=X, y=Y, shape=Category, color=Category)) + 
+  geom_point(size = 2) + # larger points are easier to read
+  labs(
+    title = "(More) Accessible Scatterplot Example",
+    x = "X-axis Label", # replace with informative label
+    y = "Y-axis Label") + # replace with informative label
+  theme_minimal() +
+  scale_color_brewer(palette = "Set1")
+
+library(RColorBrewer)
+display.brewer.all(colorblindFriendly = TRUE,
+                   type = "all")
+#?display.brewer.all   # for more details about the colour palette options
+```
+
+
+
+
+
+# Class demo
+
+## Where do the data come from?
+https://github.com/jldbc/coffee-quality-database
+
+Who? 
+
+When? 
+
+What?
+
+How?
+
+
+## Let's visualize some distributions
+
+```{r}
+library(tidyverse)
+# Loading coffee ratings data
+coffee_ratings <- read_csv("coffee_ratings.csv")
+glimpse(coffee_ratings)
+
+
+### Histogram: Choose a numerical variable to visualize here ###
+# Most basic histogram (just with default values)
+
+# Let's change the number of bins
+
+# Another way of changing the number of bins: specifying binwidth
+
+# Let's change the axis labels using `+ labs(x = "New title")`
+
+# How can we change the colours of the bars (fill and outline)
+```
+
+
+```{r}
+### Boxplot ###
+# Most basic boxplot (just with default values)
+
+# Let's look at the association between our numerical variable and a categorical
+# variable using boxplots
+
+```
+
+
+```{r}
+### Barplot ###
+# Most basic barplot (just with default values)
+
+# Do we want to make the bars horizontal instead?
+
+# Let's change the axis titles to be more descriptive
+
+# Can we change the colours (with fill and colour)?
+
+```
+
+
+```{r}
+### Scatterplot ###
+# Most basic scatterplot (just with default values)
+
+coffee_ratings %>% ggplot(aes(x=aroma, y=flavor)) +
+  geom_point(alpha = 0.2)
+
+# Let's improve the axis titles
+
+# Are there lots of overlapping points? We can change the transparency using alpha
+
+# Can we colour the points by the value of a categorical variable?
+
+# Can we split this into separate scatterplots for each value of the categorical variable?
+
+
+```
+
+
+
+
+
+
+
+
+
+
+
