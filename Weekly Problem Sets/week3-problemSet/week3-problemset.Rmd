@@ -1,6 +1,6 @@
 ---
 title: "STA130H1S -- Winter 2024"
-author: "N. Moon and J. Speagle [ADD YOUR NAME HERE]"
+author: "N. Moon and J. Speagle and Christopher Li"
 subtitle: Week 3 Practice Problems
 output:
   pdf_document: default
@@ -46,12 +46,14 @@ glimpse(oly12)
 ### (a) Create a new tibble called `oly12_selectedSports` which contains only data for athletes who competed in either Weightlifting or Badminton (look at values of the `Sport` variable). Your new dataset should contain all the same columns as the original `oly12` tibble, and you shouldn't sort the data. In the code chunk below, replace NULL with the code required to produce the tibble described above.
 
 ```{r}
-oly12_selectedSports <- NULL
+oly12_selectedSports <- oly12 %>% filter(Sport %in% c("Weightlifting", "Badminton")) 
 ```
 
 ### (b) [Optional] Compare the age distribution for olympic athletes competing in weightlifting to the age distribution of olympic athletes competing in  badminton using both boxplots and histograms.  Produce at least two relevant visualizations to compare these distributions.
 
 ```{r}
+oly12_selectedSports %>% ggplot(aes(x = Age)) + geom_histogram(color="black", fill="gray", bins=20) + facet_wrap(~Sport)
+oly12_selectedSports %>% ggplot(aes(x = Age)) + geom_boxplot(color="black", fill="gray") + coord_flip() + facet_wrap(~Sport)
 
 ```
 
@@ -59,23 +61,33 @@ oly12_selectedSports <- NULL
 
 ### (i) Are the age distributions of badminton players and weightlifters symmetrical or skewed? Specify which aspects of the plot(s) you used to assess this.
 
+These 2 distributions are approximately symmetrical with a very slight skew right. For each graph, the peaks seem to be in the center of each distribution, but there does seem to be a tail in each graph. 
+
 ### (ii) Is the median age higher for badminton players or weightlifters? Specify which aspect(s) of the plot(s) you used to assess this.
 
+The median for badminton is higher than that of weightlifting. When comparing the median line in each box plot, the median of Badminton is higher than that of Weightlifting. 
+
 ### (iii) Based only on the histogram and boxplots (no calculations), predict whether the standard deviation of the ages is similar or different.  Justify your answer in 2-3 sentences, making specific reference to aspect(s) of the plot(s) you used to assess this.
+
+The standard deviation for weightlifting is most likely lower than that of badminton. The range for badminton is approx ~25y while the range for weightlifting is ~20y. Both distributions look similar so the larger range of badminton will result in a larger standard deviation. 
 
 ### (d) Create a summary table reporting the minimum, maximum, mean, median, and standard deviation of ages for badminton players and weightlifters. The columns of your summary table should be "min", "max", "mean", "median", and "sd" (in this order).  Write a sentence compare these values to the prediction you made in (e-iii). In the code chunk below, replace NULL with the code required to produce the tibble described above.
 
 ```{r}
-oly12_part_d <- NULL
-
+oly12_part_d <- oly12_selectedSports %>% group_by(Sport) %>% summarize(
+  min = min(Age),
+  max = max(Age),
+  mean = mean(Age),
+  median = median(Age),
+  sd = sd(Age),
+)
 ```
 
 
 ### (e)  Use the `arrange` function to find the name and age of the 6 youngest athletes who competed in the 2012 Olympics. Your answer should be a tibble with 6 rows (sorted by age, with the youngest athlete in the first row) and the following 4 columns in this order: "Name", "Age", "Sport", "Event". In the code chunk below, replace NULL with the code required to produce the tibble described above.
 
 ```{r}
-oly12_part_e <- NULL
-
+oly12_part_e <- oly12 %>% select(Name, Age, Sport, Event) %>% arrange(Age) %>% head()
 ```
 
 
@@ -83,23 +95,19 @@ oly12_part_e <- NULL
 ### (f)  Modify your code from (g) to find the name, Age, and event for the 6 youngest competitors who won gold medals at the 2012 olympics. Your answer should be a tibble sorted by age, with the youngest athlete in the first row and the following 4 columns in this order: "Name", "Age", "Sport", "Event". In the code chunk below, replace NULL with the code required to produce the tibble described above.
 
 ```{r}
-oly12_part_f <- NULL
-
+oly12_part_f <- oly12 %>% filter(Gold > 0) %>% select(Name, Age, Sport, Event) %>% arrange(Age) %>% head()
 ```
 
 
 ### (g) Create a new tibble called `oly12_partg` which contains the following columns: "Name", "Country", "Sport", and "total_medals", in this order. The new variable "total_medals" should be calculated based on values of existing variables in `oly12`.
 
 ```{r}
-oly12_part_g <- NULL
-
-
+oly12_part_g <- oly12 %>% mutate(total_medals = Gold + Silver + Bronze) %>% select(Name, Country, Sport, total_medals)
 ```
 
 ### (h) [Optional] Use `arrange`, `head(n=1)` and `select` to extract name of the athlete who won the most total medals (you should get a tibble with one row and one column). Hint: `head(n=1)` keeps only the top row of a tibble. In the code chunk below, replace NULL with the code required to extract the name of the athlete you're looking for
 ```{r}
-oly12_part_h_optional <- NULL
-
+oly12_part_h_optional <- oly12_part_g %>% arrange(desc(total_medals)) %>% head(n=1) %>% select(Name)
 ```
 
 
@@ -119,9 +127,7 @@ glimpse(titanic)
 
 ### (i) Since many of their values are missing or unclear, modify the `titanic` data frame by removing the following variables: `Ticket_No`, `Boat_or_Body`, `Class_Dept`, `Class_Full`. Don't change the order of the other variables in the `titanic` tibble. In the code chunk below, replace NULL with the code required to produce the tibble described above.
 ```{r}
-titanic_part_a_i <- NULL
-
-
+titanic_part_a_i <- titanic %>% select(-Ticket_No, -Boat_or_Body, -Class_Dept, -Class_Full)
 ```
 
 ### (ii) The variable `Adut_or_Chld` indicates which passengers were adults and which were children. Starting with the dataset you created in the previous part (`titanic_part_a_i`), change the name of this variable to `Adult_or_Child`. `MWC` is a little more specific, recording whether the passenger was a man, woman or child. To make this variable name clearer, change the name of `MWC` to `Man_Woman_or_Child`. Hint: the use `rename()` function from the `dplyr` library to change the name of an existing variable.  For example, the following code would change the name of the "PlaceOB" variable in the `oly12` dataset to "Place_of_birth":
@@ -131,7 +137,7 @@ oly12 <- oly12 %>% rename(Place_of_birth = PlaceOB)
 ```
 
 ```{r}
-titanic_part_a_ii <- NULL
+titanic_part_a_ii <- titanic_part_a_i %>% rename(Man_Woman_or_Child = MWC)
 
 
 
@@ -139,6 +145,7 @@ titanic_part_a_ii <- NULL
 # for the rest of this question, you'll be using the dataset you created in the previous part (with the cleaner variable names)
 # Do not change the code on the line below
 titanic_clean <- titanic_part_a_ii
+titanic_clean
 ```
 
 
@@ -147,39 +154,35 @@ titanic_clean <- titanic_part_a_ii
 ### (b) Starting with the clean dataset you created in the previous part (`titanic_clean`), create a summary table reporting the number of passengers on the Titanic (n), the number of passengers who died (n_died), and the proportion of passengers who died (prop_died). The names of the columns in your summary table should be `n`, `n_died` and `prop_died`, in this order. In the code chunk below, replace NULL with the code required to produce the tibble described above.
 
 ```{r}
-titanic_part_b <- NULL
-
-
+titanic_part_b <- titanic_clean %>% summarize(n = n(), n_died = sum(Survived == "Dead"), prop_died = sum(Survived == "Dead") / n())
 ```
 
 ### (c) Calculate the proportion of deaths for the following groups of passengers.  Note that there is more than one way to do this in each of the parts below.  
 
 ### (i) For men, women, and children:
 ```{r}
-
-
+titanic_clean %>% group_by(Man_Woman_or_Child) %>% summarize(prop_died = sum(Survived == "Dead") / n())
 ```
 
 ### (ii) For passengers aged between 18-25 years of age:
 ```{r}
-
+titanic_clean %>% filter(18 <= Age & Age <= 25) %>% summarize(prop_died = sum(Survived == "Dead") / n())
 
 ```
 
 ### (iii) For men, women, and children among the passengers who paid more than 30 British pounds for their tickets: 
 ```{r}
-
-
+titanic_clean %>% filter(30 <= Paid) %>% summarize(prop_died = sum(Survived == "Dead") / n())
 
 ```
 
 ### (iv) Write several sentences interpreting the summary tables you created in parts (i)-(iii) of this question.
 
+The proportion of men who died is much higher that either woman or children. However, the proportion of richer passengers (i.e. paid > 30 pounds) had a higher chance of survival, though the deaths of people within 18-25 was pretty representative of the total deaths.
 
 ### (d) What was the most common job among passengers of the Titanic? Write 1-2 sentences explaining your answer. Hint: create a summary table reporting the number of passengers with each job title, and sort it from most common to least common job. In the code chunk below, replace NULL with the code required to produce the tibble described above.
 ```{r}
-titanic_part_d <- NULL
-
+titanic_part_d <- titanic_clean %>% group_by(Job) %>% summarize(n = n()) %>% arrange()
 
 
 titanic_part_d
@@ -189,16 +192,21 @@ titanic_part_d
 
 ### (e) [Optional] Plot the age distribution for passengers with the job "General Labourer", and describe this distribution in 1-2 sentences.
 ```{r}
+titanic_clean %>% filter(Job == "General Labourer" & !is.na(Age)) %>% ggplot(aes(x = Age)) + geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 10)
 
 
 ```
-
+The distribution is unimodal and skewed right. There is a center at around 25 years of age and no outliers. 
 
 ### (f) [Optional] Were any of the general labourers on the titanic women? If so, how many? Hint: You can either produce a plot or a summary table to answer this question - it is up to you.
 
 ```{r}
+titanic_clean %>% filter(Job == "General Labourer" & Sex == "Female")
+
 # Replace NULL by TRUE or FALSE (no quotation marks), based on what you observe in the plots or summary tables you create
-titanic_part_f_any_female_labourers_optional <- NULL
+titanic_part_f_any_female_labourers_optional <- TRUE
 
 
 
@@ -207,18 +215,23 @@ titanic_part_f_any_female_labourers_optional <- NULL
 
 ### (g) What are the names of the passengers with the most expensive ticket? Did these passengers survive the accident?  In the code below, replace NULL with the family name of the passenger with the most expensive ticket (write the name in uppercase letters, with quotation marks. For example, if Nathalie Moon had the most expensive ticket, you would write "MOON"); in the titanic tibble, family names are in uppercase letters so they are easy to spot.
 ```{r}
-titanic_part_g <- NULL
+titanic_clean %>% arrange(desc(Paid))
 
-
+titanic_part_g <- "CARDEZA"
 ```
 
 
 
 ### (h) [Optional] In this question, you will compare the distribution of ticket prices for survivors and non-survivors of the Titanic using both visualizations and summary tables.
 
+
+
 ### (i) Construct two histograms to visualize the distribution of ticket prices for survivors and non-survivors (i.e. one histogram for survivors and one for non-survivors). Write 2-3 sentences comparing the two distributions based on these plots.
 ```{r, fig.width=6, fig.height=3}
 
+titanic_clean %>% filter(!is.na(Paid)) %>% ggplot(aes(x = Paid)) + geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 20) + facet_wrap(~Survived)
 
 ```
 
@@ -226,8 +239,7 @@ titanic_part_g <- NULL
 
 ### (ii) Construct a pair of boxplots to visualize the distribution of ticket prices for survivors and non-survivors. Write 2-3 sentences comparing the two distributions based on these plots.
 ```{r}
-
-
+titanic_clean %>% filter(!is.na(Paid)) %>% ggplot(aes(x = Paid)) + geom_boxplot(color="black", fill="gray") + coord_flip() + facet_wrap(~Survived)
 ```
 
 ### (iii) Construct a summary table with the minimum, first quartile, median, mean, third quartile, and maximum ticket price for survivors and non-survivors.  Hint: The code below gives an example of the `quantile` function, which you'll use to calculate Q1 and Q3, as well as the na.rm=TRUE option:
@@ -242,6 +254,11 @@ mean(x)
 mean(x, na.rm=TRUE)
 median(x)
 median(x, na.rm=TRUE)
+
+
+
+#quantile(titanic_clean["Paid"], probs=0.25, na.rm=True)
+# quantile(titanic_clean, Paid, probs=0.75, na.rm=True)
 ```
 
 
@@ -250,6 +267,7 @@ median(x, na.rm=TRUE)
 
 ```{r}
 
+titanic_clean %>% summarize(min = min(Paid, na.rm=TRUE), q1 = quantile(Paid, probs=0.25, na.rm=TRUE), median = median(Paid, na.rm=TRUE), q3 = quantile(Paid, probs=0.75, na.rm=TRUE), max = max(Paid, na.rm=TRUE))
 
 
 ```
@@ -258,6 +276,6 @@ median(x, na.rm=TRUE)
 ### (iv) Comment on the strengths and weaknesses of each of the visualizations and summary table you constructed in parts (i), (ii), and (iii)
 
 
-
+Summary tables gives us actual hard numbers, however it's hard (to impossible) to determine the shape of the distribution and using measures of center like mean/median might return bad numbers (i.e. multimodal, skewed, etc). Using a graph allows us to see the shape of the distribution, however we don't get any hard numbers to work with. 
 
 
