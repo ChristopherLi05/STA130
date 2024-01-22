@@ -69,13 +69,9 @@ The median for badminton is higher than that of weightlifting. When comparing th
 
 ### (iii) Based only on the histogram and boxplots (no calculations), predict whether the standard deviation of the ages is similar or different.  Justify your answer in 2-3 sentences, making specific reference to aspect(s) of the plot(s) you used to assess this.
 
-<<<<<<< HEAD
 The standard deviation for weightlifting is most likely lower than that of badminton. The range for badminton is approx ~25y while the range for weightlifting is ~20y. Both distributions look similar so the larger range of badminton will result in a larger standard deviation. 
 
-### (d) Create a summary table reporting the minimum, maximum, mean, median, and standard deviation of ages for badminton players and weightlifters. The columns of your summary table should be "min", "max", "mean", "median", and "sd" (in this order).  Write a sentence compare these values to the prediction you made in (e-iii). In the code chunk below, replace NULL with the code required to produce the tibble described above.
-=======
 ### (d) Create a summary table reporting the minimum, maximum, mean, median, and standard deviation of ages for badminton players and weightlifters. The columns of your summary table should be "min", "max", "mean", "median", and "sd" (in this order).  Write a sentence compare these values to the prediction you made in (c-iii). In the code chunk below, replace NULL with the code required to produce the tibble described above.
->>>>>>> main
 
 ```{r}
 oly12_part_d <- oly12_selectedSports %>% group_by(Sport) %>% summarize(
