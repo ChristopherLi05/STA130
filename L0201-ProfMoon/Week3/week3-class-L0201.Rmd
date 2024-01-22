@@ -1,0 +1,311 @@
+---
+title: "STA130 Week 3 - Data Wrangling"
+author: "Nathalie Moon"
+date: "2023-12-07"
+output:
+  pdf_document: default
+  html_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r, include=FALSE}
+library(tidyverse)
+library(openintro)
+```
+# STA130 - Week 3: Data Wrangling
+
+
+```{r datacleaning, include=FALSE}
+# Example 1: Baby names - Data cleaning
+baby_names_untidy <- read_csv("baby_names.csv")
+baby_names_m <- baby_names_untidy %>% select(year, male, rank) %>% mutate(sex = "male") %>% rename(name = male)
+baby_names_f <- baby_names_untidy %>% select(year, female, rank) %>% mutate(sex = "female") %>% rename(name = female)
+baby_names <- rbind(baby_names_m, baby_names_f)
+write_csv(baby_names, "babynames.csv")
+
+# Example 2: US Census Data
+# https://www.openintro.org/data/index.php?data=gss2010
+survey <- gss2010 %>% 
+  filter(!is.na(hrsrelax) & !is.na(mntlhlth) & !is.na(hrs1) & !is.na(degree) & !is.na(grass)) %>%
+  rename(marijuana = grass,
+         hours_worked_per_week = hrs1,
+         mental_health = mntlhlth,
+         hours_relax_per_day = hrsrelax) %>%
+  mutate(degree = as.character(degree)) %>%
+  mutate(degree = ifelse(degree=="LT HIGH SCHOOL", yes="LESS THAN HIGH SCHOOL", no=degree))
+write_csv(survey, "us_general_social_survey_2010.csv")
+```
+
+# Class Demo
+
+## `filter()`, `select()`, and `arrange()` with baby_names
+```{r}
+baby_names <- read_csv("babynames.csv")
+
+# Let's take a look at these data
+glimpse(baby_names)
+
+head(baby_names)
+
+# In what years was Nathalie in the top 20 names?
+baby_names %>% filter(name == "Nathalie")
+baby_names %>% filter(name %in% c("Nathalie", "Natalie"))
+baby_names %>% filter(name == "Nathalie" | name == "Natalie")
+
+# Let's simplify our results table to just see the columns we care about: year
+baby_names %>% 
+  filter(name == "Nathalie" | name == "Natalie") %>%
+  select(year)
+
+# Can we sort results by rank to see what year it was most popular?
+baby_names %>% 
+  filter(name == "Nathalie" | name == "Natalie") %>%
+  arrange(rank)
+
+# Suppose you want to get *just* the year it was most popular?
+baby_names %>%  
+  filter(name == "Nathalie" | name == "Natalie") %>%
+  arrange(rank) %>%
+  select(year) %>%
+  head(n=1) 
+```
+
+## `summarise` and `group_by` with census
+
+
+```{r}
+# Poll question for class
+
+baby_names %>% 
+  filter(rank == 1 & sex == "female") %>%
+  group_by(name) %>%
+  summarise(n=n()) %>%
+  arrange(desc(n)) %>%
+  head(n=10)
+```
+
+```{r}
+# Can we calculate the proportion of years (in our data) that each name was in the top 20?
+baby_names %>%
+  group_by(name, sex) %>%
+  summarise(n=n()) %>%
+  arrange(desc(n)) %>%
+  mutate(proportion_years_in_top_20 = n / 141)
+
+
+```
+
+
+
+
+
+
+
+\newpage
+# Code from slides
+
+## baby_names: filter, select & arrange
+```{r}
+baby_names <- read_csv("babynames.csv")
+
+# Let's take a look at these data
+glimpse(baby_names)
+head(baby_names)
+
+# Extreact only the names most popular each year
+most_popular <- baby_names %>% filter(rank == 1)
+head(most_popular)
+
+# Extract only the most popular boys names each year
+most_popular_boy_names <- baby_names %>% filter(rank == 1 & sex == "male")
+glimpse(most_popular_boy_names)
+
+# Give a name to our new tibble
+boys_names_rank_one <- baby_names %>% filter(rank == 1 & sex == "male")
+glimpse(boys_names_rank_one)
+
+# Remove the 'sex' and 'rank' columns since we don't need them
+boys_names_rank_one <- boys_names_rank_one %>% select(-sex, -rank)
+glimpse(boys_names_rank_one)
+
+# boys_names_rank_one <- boys_names_rank_one %>% select(year, name)
+
+```
+
+```{r}
+girls_names_top_5 <- baby_names %>%
+  filter(sex == "female") %>%
+  filter(rank <= 5) %>%
+  select(-sex)
+glimpse(girls_names_top_5)
+```
+
+\newpage
+```{r}
+# Sort from most recent year to oldest year
+girls_names_top_5 %>% arrange(desc(year))
+```
+
+## census: summarise, group_by & mutate
+
+```{r}
+# Create a simple summary table
+# Use US census data (2010) here because more interesting numerical values
+survey <- read_csv("us_general_social_survey_2010.csv", col_types = "dddcc")
+glimpse(survey)
+```
+
+```{r}
+# Want to calculate summary statistics for the number of hours worked per week
+survey %>%
+  summarise(
+    n = n(),
+    mean_work_hrs = mean(hours_worked_per_week))
+
+# What about if we want to calculate the above for each level of education separately?
+survey %>%
+  group_by(degree) %>%
+  summarise(
+    n = n(),
+    mean_work_hrs = mean(hours_worked_per_week))
+
+# Let's add a new variable that is the ratio of hours spent relaxing and hours spent working
+survey <- survey %>%
+  mutate(ratio_relax_to_work = hours_relax_per_day * 7 / hours_worked_per_week)
+
+glimpse(survey)
+
+survey %>%
+  group_by(degree) %>%
+  summarise(
+    n = n(),
+    mean_ratio = mean(ratio_relax_to_work))
+
+survey %>% 
+  mutate(workload = case_when(hours_worked_per_week < 40 ~ "less than 40hrs",
+                              hours_worked_per_week > 40 ~ "more than 40hrs")) %>%
+  group_by(workload) %>%
+  summarise(n = n(),
+        prop_approve = sum(marijuana == "LEGAL") / n)
+```
+
+
+
+
+
+
+
+
+
+
+# More examples
+
+
+
+```{r}
+survey <- read_csv("us_general_social_survey_2010.csv")
+head(survey)
+
+# For each level of education, what are mean and median hours worked per week?
+survey %>% group_by(degree) %>%
+  summarise(mean_hours_worked_per_week = mean(hours_relax_per_day),
+            median_hours_worked_per_week = median(hours_worked_per_week))
+
+# Let's reorder degree in a specific order, and save that in our original data
+survey <- survey %>%
+  mutate(degree = factor(degree, levels=c("LESS THAN HIGH SCHOOL", "HIGH SCHOOL", "JUNIOR COLLEGE", "BACHELOR", "GRADUATE")))
+
+# Now look at standard deviation too, and also reorder degree i
+survey %>% group_by(degree) %>%
+  summarise(mean_hours_worked_per_week = mean(hours_worked_per_week),
+            median_hours_worked_per_week = median(hours_worked_per_week),
+            sd_hours_worked_per_week = sd(hours_worked_per_week))
+
+survey %>% ggplot(aes(x=hours_worked_per_week)) +
+  geom_histogram(bins=10, color="black", fill="gray") +
+  facet_wrap(~degree)
+
+survey %>% 
+  ggplot(aes(x=hours_worked_per_week, y=degree)) +
+  geom_violin(width=1) +
+  geom_boxplot(width=0.3, color="gray", alpha=0.2)
+
+
+# Now let's look at opinions about legalizing marijuana
+survey %>% group_by(degree) %>%
+  summarise(n = n(),
+            prop_approve = sum(marijuana == "LEGAL") / n)
+
+survey %>% filter(hours_relax_per_day < 10) %>%
+  ggplot(aes(x=hours_relax_per_day, y=degree)) +
+  geom_violin(width=1) +
+  geom_boxplot(width=0.3, color="gray", alpha=0.2)
+
+survey %>% 
+  mutate(workload = case_when(hours_worked_per_week < 40 ~ "less than 40hrs",
+                              hours_worked_per_week > 40 ~ "more than 40hrs")) %>%
+  group_by(workload) %>%
+  summarise(n = n(),
+        prop_approve = sum(marijuana == "LEGAL") / n)
+
+survey %>% 
+  mutate(workload = case_when(hours_worked_per_week <= 40 ~ "less than or equal to 40hrs",
+                              hours_worked_per_week > 40 ~ "more than 40hrs")) %>%
+  group_by(workload) %>%
+  summarise(n = n(),
+        prop_approve = sum(marijuana == "LEGAL") / n)
+
+```
+
+\newpage
+## `summarise()` and `group_by()` with baby_names
+```{r}
+# Now let's see which names were in the top 20 most often
+baby_names %>%
+  group_by(name) %>%
+  summarise(n=n()) %>%
+  arrange(desc(n))
+
+# Now let's see which names were in the top 20 most often
+baby_names %>%
+  group_by(name, sex) %>%
+  summarise(n=n()) %>%
+  arrange(desc(n))
+
+# Let's find 10 names that were in top 20 most often for males
+baby_names %>%
+  group_by(name, sex) %>%
+  summarise(n=n()) %>%
+  arrange(desc(n)) %>%
+  filter(sex=="male") %>%
+  head(n=10)
+
+# Let's find 10 names that were in top 20 most often for females
+baby_names %>%
+  group_by(name, sex) %>%
+  summarise(n=n()) %>%
+  arrange(desc(n)) %>%
+  filter(sex=="female") %>%
+  head(n=10)
+
+# James and William ranked in top 20 every year in these data. 
+# On average, which name has ranked higher over time?
+baby_names %>%
+  group_by(name) %>%
+  summarise(mean_rank = mean(rank)) %>%
+  filter(name %in% c("James", "William"))
+
+# Overall, which girl name has ranked highest, on average
+# What's the problem with the code below (some names aren't listed in all years, so this will make them seem more popular than they really were)
+baby_names %>%
+  filter(sex == "female") %>%
+  group_by(name) %>%
+  summarise(mean_rank = mean(rank)) %>%
+  arrange(mean_rank)
+
+
+```
+
