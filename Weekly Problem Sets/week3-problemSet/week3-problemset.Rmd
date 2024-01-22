@@ -63,7 +63,7 @@ oly12_selectedSports <- NULL
 
 ### (iii) Based only on the histogram and boxplots (no calculations), predict whether the standard deviation of the ages is similar or different.  Justify your answer in 2-3 sentences, making specific reference to aspect(s) of the plot(s) you used to assess this.
 
-### (d) Create a summary table reporting the minimum, maximum, mean, median, and standard deviation of ages for badminton players and weightlifters. The columns of your summary table should be "min", "max", "mean", "median", and "sd" (in this order).  Write a sentence compare these values to the prediction you made in (e-iii). In the code chunk below, replace NULL with the code required to produce the tibble described above.
+### (d) Create a summary table reporting the minimum, maximum, mean, median, and standard deviation of ages for badminton players and weightlifters. The columns of your summary table should be "min", "max", "mean", "median", and "sd" (in this order).  Write a sentence compare these values to the prediction you made in (c-iii). In the code chunk below, replace NULL with the code required to produce the tibble described above.
 
 ```{r}
 oly12_part_d <- NULL
