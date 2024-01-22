@@ -1,0 +1,263 @@
+---
+title: "STA130H1S -- Winter 2024"
+author: "N. Moon and J. Speagle [ADD YOUR NAME HERE]"
+subtitle: Week 3 Practice Problems
+output:
+  pdf_document: default
+---
+
+```{r, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+library(openintro)
+```
+
+
+# Instructions
+
+## How do I hand in my solutions and how do I check my work
+
+You will submit your solutions (.Rmd and .pdf) on MarkUs at the following link: https://markus4.teach.cs.toronto.edu/2024-01/courses/1
+Submissions are due at 5pm on Thursdays; see [Quercus page](https://q.utoronto.ca/courses/341136/pages/course-schedule-and-materials) for the specific deadline for each problem set.
+
+Usually when you do an assignment, you don't find out whether your answers are correct until *after* the deadline, when you get your grade back.
+However, using MarkUs, you can submit your work before the deadline and run tests to check your solutions!  
+
+*Note:* Some parts of some questions may not be covered by tests in MarkUs, but you're still responsible for reviewing the posted solutions and make sure you understand them. Some of these parts will also be graded in some weeks.
+
+Some of the optional questions have tests in MarkUs, but you won't be penalized for not completing these (or failing the tests for these parts) when we grade your work after the submission deadline. The tests for these parts are provided for your guidance.
+
+### What to do if a test fails on MarkUs
+
+- Take a deep breath!  Your work won't really be graded until the deadline, so start early to make sure you have lots of time to resolve issues before the deadline.
+- Read the message to get hints about what the problem is. For example "variable X not present" means that you may have a typo in the name of the variable we're looking for - re-read the question carefully and make sure you're following the instructions.
+- Search on Piazza to see if other classmates have encountered a similar error (and if not, consider posting a screenshot of the error message).
+- Come to TA or instructor office hours with your issue.
+
+
+
+## [Question 1] The code below loads the `VGAMdata` package (so you can access the datasets it contains) and the `tidyverse` package (so you can use the functions it contains) and glimpses the `oly12` dataset, which you will use for this question.
+
+```{r}
+library(tidyverse)
+library(VGAMdata)
+glimpse(oly12)
+```
+
+### (a) Create a new tibble called `oly12_selectedSports` which contains only data for athletes who competed in either Weightlifting or Badminton (look at values of the `Sport` variable). Your new dataset should contain all the same columns as the original `oly12` tibble, and you shouldn't sort the data. In the code chunk below, replace NULL with the code required to produce the tibble described above.
+
+```{r}
+oly12_selectedSports <- NULL
+```
+
+### (b) [Optional] Compare the age distribution for olympic athletes competing in weightlifting to the age distribution of olympic athletes competing in  badminton using both boxplots and histograms.  Produce at least two relevant visualizations to compare these distributions.
+
+```{r}
+
+```
+
+### (c)  [Optional] Based on the plots you created in (b), answer the following questions:
+
+### (i) Are the age distributions of badminton players and weightlifters symmetrical or skewed? Specify which aspects of the plot(s) you used to assess this.
+
+### (ii) Is the median age higher for badminton players or weightlifters? Specify which aspect(s) of the plot(s) you used to assess this.
+
+### (iii) Based only on the histogram and boxplots (no calculations), predict whether the standard deviation of the ages is similar or different.  Justify your answer in 2-3 sentences, making specific reference to aspect(s) of the plot(s) you used to assess this.
+
+### (d) Create a summary table reporting the minimum, maximum, mean, median, and standard deviation of ages for badminton players and weightlifters. The columns of your summary table should be "min", "max", "mean", "median", and "sd" (in this order).  Write a sentence compare these values to the prediction you made in (e-iii). In the code chunk below, replace NULL with the code required to produce the tibble described above.
+
+```{r}
+oly12_part_d <- NULL
+
+```
+
+
+### (e)  Use the `arrange` function to find the name and age of the 6 youngest athletes who competed in the 2012 Olympics. Your answer should be a tibble with 6 rows (sorted by age, with the youngest athlete in the first row) and the following 4 columns in this order: "Name", "Age", "Sport", "Event". In the code chunk below, replace NULL with the code required to produce the tibble described above.
+
+```{r}
+oly12_part_e <- NULL
+
+```
+
+
+
+### (f)  Modify your code from (g) to find the name, Age, and event for the 6 youngest competitors who won gold medals at the 2012 olympics. Your answer should be a tibble sorted by age, with the youngest athlete in the first row and the following 4 columns in this order: "Name", "Age", "Sport", "Event". In the code chunk below, replace NULL with the code required to produce the tibble described above.
+
+```{r}
+oly12_part_f <- NULL
+
+```
+
+
+### (g) Create a new tibble called `oly12_partg` which contains the following columns: "Name", "Country", "Sport", and "total_medals", in this order. The new variable "total_medals" should be calculated based on values of existing variables in `oly12`.
+
+```{r}
+oly12_part_g <- NULL
+
+
+```
+
+### (h) [Optional] Use `arrange`, `head(n=1)` and `select` to extract name of the athlete who won the most total medals (you should get a tibble with one row and one column). Hint: `head(n=1)` keeps only the top row of a tibble. In the code chunk below, replace NULL with the code required to extract the name of the athlete you're looking for
+```{r}
+oly12_part_h_optional <- NULL
+
+```
+
+
+
+
+
+\newpage
+
+
+## [Question 2] At the time it departed from England in April 1912, the RMS Titanic was the largest ship in the world. In the night of April 14th to April 15th, the Titanic struck an iceberg and sank approximately 600km south of Newfoundland (a province in eastern Canada). Many people perished in this accident. The code below loads data about the passengers who were on board the Titanic at the time of the accident.
+```{r}
+titanic <- read_csv("titanic.csv", col_types = "cccccdccdccccc")
+glimpse(titanic)
+```
+
+### (a) Often, before you start working with a dataset you need to clean it.  
+
+### (i) Since many of their values are missing or unclear, modify the `titanic` data frame by removing the following variables: `Ticket_No`, `Boat_or_Body`, `Class_Dept`, `Class_Full`. Don't change the order of the other variables in the `titanic` tibble. In the code chunk below, replace NULL with the code required to produce the tibble described above.
+```{r}
+titanic_part_a_i <- NULL
+
+
+```
+
+### (ii) The variable `Adut_or_Chld` indicates which passengers were adults and which were children. Starting with the dataset you created in the previous part (`titanic_part_a_i`), change the name of this variable to `Adult_or_Child`. `MWC` is a little more specific, recording whether the passenger was a man, woman or child. To make this variable name clearer, change the name of `MWC` to `Man_Woman_or_Child`. Hint: the use `rename()` function from the `dplyr` library to change the name of an existing variable.  For example, the following code would change the name of the "PlaceOB" variable in the `oly12` dataset to "Place_of_birth":
+```{r, eval=FALSE}
+# Note: When using the rename function, put the new variable name on the left of the equals sign, and the old variable name on the right. This is similar to the mutate function, where you put the name of the new variable on the left, and the formula to calculate it on the right.
+oly12 <- oly12 %>% rename(Place_of_birth = PlaceOB)
+```
+
+```{r}
+titanic_part_a_ii <- NULL
+
+
+
+
+# for the rest of this question, you'll be using the dataset you created in the previous part (with the cleaner variable names)
+# Do not change the code on the line below
+titanic_clean <- titanic_part_a_ii
+```
+
+
+
+
+### (b) Starting with the clean dataset you created in the previous part (`titanic_clean`), create a summary table reporting the number of passengers on the Titanic (n), the number of passengers who died (n_died), and the proportion of passengers who died (prop_died). The names of the columns in your summary table should be `n`, `n_died` and `prop_died`, in this order. In the code chunk below, replace NULL with the code required to produce the tibble described above.
+
+```{r}
+titanic_part_b <- NULL
+
+
+```
+
+### (c) Calculate the proportion of deaths for the following groups of passengers.  Note that there is more than one way to do this in each of the parts below.  
+
+### (i) For men, women, and children:
+```{r}
+
+
+```
+
+### (ii) For passengers aged between 18-25 years of age:
+```{r}
+
+
+```
+
+### (iii) For men, women, and children among the passengers who paid more than 30 British pounds for their tickets: 
+```{r}
+
+
+
+```
+
+### (iv) Write several sentences interpreting the summary tables you created in parts (i)-(iii) of this question.
+
+
+### (d) What was the most common job among passengers of the Titanic? Write 1-2 sentences explaining your answer. Hint: create a summary table reporting the number of passengers with each job title, and sort it from most common to least common job. In the code chunk below, replace NULL with the code required to produce the tibble described above.
+```{r}
+titanic_part_d <- NULL
+
+
+
+titanic_part_d
+```
+
+631 of the passengers do not have a job listed (NA).  The job recorded for the largest number of passengers is "General Labourer" (162), although there were also 161 firemen.
+
+### (e) [Optional] Plot the age distribution for passengers with the job "General Labourer", and describe this distribution in 1-2 sentences.
+```{r}
+
+
+```
+
+
+### (f) [Optional] Were any of the general labourers on the titanic women? If so, how many? Hint: You can either produce a plot or a summary table to answer this question - it is up to you.
+
+```{r}
+# Replace NULL by TRUE or FALSE (no quotation marks), based on what you observe in the plots or summary tables you create
+titanic_part_f_any_female_labourers_optional <- NULL
+
+
+
+```
+
+
+### (g) What are the names of the passengers with the most expensive ticket? Did these passengers survive the accident?  In the code below, replace NULL with the family name of the passenger with the most expensive ticket (write the name in uppercase letters, with quotation marks. For example, if Nathalie Moon had the most expensive ticket, you would write "MOON"); in the titanic tibble, family names are in uppercase letters so they are easy to spot.
+```{r}
+titanic_part_g <- NULL
+
+
+```
+
+
+
+### (h) [Optional] In this question, you will compare the distribution of ticket prices for survivors and non-survivors of the Titanic using both visualizations and summary tables.
+
+### (i) Construct two histograms to visualize the distribution of ticket prices for survivors and non-survivors (i.e. one histogram for survivors and one for non-survivors). Write 2-3 sentences comparing the two distributions based on these plots.
+```{r, fig.width=6, fig.height=3}
+
+
+```
+
+
+
+### (ii) Construct a pair of boxplots to visualize the distribution of ticket prices for survivors and non-survivors. Write 2-3 sentences comparing the two distributions based on these plots.
+```{r}
+
+
+```
+
+### (iii) Construct a summary table with the minimum, first quartile, median, mean, third quartile, and maximum ticket price for survivors and non-survivors.  Hint: The code below gives an example of the `quantile` function, which you'll use to calculate Q1 and Q3, as well as the na.rm=TRUE option:
+```{r}
+#### Example code to demo quantile() function and is.na ####
+x <- c(1,2,3,4,5,6,NA,10)
+quantile(x, probs = 0.25, na.rm=TRUE); # Calculate the first quartile (25% quantile), and tell R to exclude any missing values, if there are any
+quantile(x, probs = 0.75, na.rm=TRUE); # Calculate the third quartile (75% quantile), and tell R to exclude any missing values, if there are any
+
+# If there are missing values in the vector you're working with (or in one of the columns of a tibble), you'll want to use the na.rm=FALSE option in functions like mean, median, etc, otherwise you will just get values of NA.  Run the following code to see this in action
+mean(x)
+mean(x, na.rm=TRUE)
+median(x)
+median(x, na.rm=TRUE)
+```
+
+
+**Write 2-3 sentences comparing the two distributions based on this summary table.**
+
+
+```{r}
+
+
+
+```
+
+
+### (iv) Comment on the strengths and weaknesses of each of the visualizations and summary table you constructed in parts (i), (ii), and (iii)
+
+
+
+
+
