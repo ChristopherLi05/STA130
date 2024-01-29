@@ -1,0 +1,77 @@
+---
+title: "Week 4 Class Code"
+author: "Nathalie Moon"
+date: "2024-01-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(googlesheets4)
+```
+
+
+
+# Code from class slides
+
+## Example simulating coin flips
+```{r}
+num_trials <- 1000 # Number of simulated values (aka number of students flipping 10 coins each)
+n <- 10 # Sample size
+simulated_proportion_heads <- rep(NA, times=num_trials)
+set.seed(130)
+for(i in 1:num_trials){
+  one_sample <- sample(c("Heads", "Tails"), 
+                       size = n, 
+                       p = c(0.5, 0.5),
+                       replace = TRUE)
+  simulated_proportion_heads[i] <- sum(one_sample == "Heads") / n
+}
+
+coin_flips <- tibble(prop_heads = simulated_proportion_heads)
+coin_flips %>% ggplot(aes(x = prop_heads)) +
+  geom_histogram(bins=10, color="black", fill="gray") +
+  labs(x = "Proportion of Heads in 10 flips of a fair coin")
+```
+
+
+# Wheel of Destiny Activity
+```{r}
+# URL for Wheel of Destiny Activity
+url <- "https://docs.google.com/spreadsheets/d/1Nx2CqmqulBa966IXi8pyox_8qkocewD9L1jf-llut_4/edit?usp=sharing"
+classdata <- read_sheet(url)
+glimpse(classdata)
+
+# Clean data and create a histogram of results
+num_flips <- 10 # The total number of flips each student is supposed to do
+classdata_clean <- classdata %>%
+  rename(class = `What class are you in right now?`,
+         total_flips = `How many flips did you make (enter just the number, no quotation marks or extra symbols)?`,
+         num_heads = `How many "heads" did you get (enter just the number, no quotation marks or extra symbols)?`) %>%
+  #filter(class == "L0201-afternoon")
+  filter(total_flips == 10) %>% # make sure that we're only including responses where the students did the right number of flips
+  mutate(prop_heads = num_heads / total_flips)
+
+# If there are issues with student data / form, use coin_flips data from below
+#classdata_clean <- coin_flips
+classdata_clean %>% ggplot(aes(x=prop_heads)) +
+  geom_histogram(binwidth=0.1, 
+                 color="black",
+                 fill="gray") +
+  labs(x = paste("Proportion of heads, in ", 10, " flips of a fair coin", sep="")) +
+  xlim(0,1)
+
+## Calculating 2-sided p-value
+#classdata_clean <- coin_flips
+prop_red_wheel_of_destiny <- 0.4 # Need to change based on class values
+num_trials <- nrow(classdata_clean)
+
+sum(abs(classdata_clean$prop_heads - 0.5) >= abs(prop_red_wheel_of_destiny - 0.5)) / num_trials
+```
+
+
