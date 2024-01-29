@@ -198,7 +198,7 @@ print(STUDENT_NUMBER)     # Make sure that this is your student number
                           # then come back to this question
                           # Make sure you don't share screenshots of your 
                           # solution that share your student number with classmates
-set.seed(STUDENT_NUMBER * 2)  # Do not change this line
+set.seed(STUDENT_NUMBER + 2)  # Do not change this line
 
 # setup
 n_trials <- 1000  # number of trials
@@ -296,7 +296,7 @@ print(STUDENT_NUMBER)     # Make sure that this is your student number
                           # then come back to this question
                           # Make sure you don't share screenshots of your 
                           # solution that share your student number with classmates
-set.seed(STUDENT_NUMBER * 3)  # Do not change this line
+set.seed(STUDENT_NUMBER + 3)  # Do not change this line
 
 # setup
 n_trials <- 1000  # number of trials
@@ -339,7 +339,7 @@ print(STUDENT_NUMBER)     # Make sure that this is your student number
                           # then come back to this question
                           # Make sure you don't share screenshots of your 
                           # solution that share your student number with classmates
-set.seed(STUDENT_NUMBER * 2)  # Do not change this line
+set.seed(STUDENT_NUMBER + 2)  # Do not change this line
 
 # setup
 n_trials <- 100000  # number of trials
@@ -380,7 +380,7 @@ print(STUDENT_NUMBER)     # Make sure that this is your student number
                           # then come back to this question
                           # Make sure you don't share screenshots of your 
                           # solution that share your student number with classmates
-set.seed(STUDENT_NUMBER * 3)  # Do not change this line
+set.seed(STUDENT_NUMBER + 3)  # Do not change this line
 
 # setup
 n_trials <- 100000  # number of trials
