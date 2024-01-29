@@ -1,0 +1,122 @@
+---
+title: "Week 4 Class Materials"
+author: "Nathalie Moon and Josh Speagle"
+date: "2024-01-29"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(googlesheets4)
+```
+
+
+
+# Code from class slides
+
+## Example simulating coin flips
+```{r}
+
+# simulation info
+num_trials <- 1000  # number of simulated values (students flipping coins)
+n <- 10  # sample size (number of coin flips each time)
+simulated_proportion_heads <- rep(NA, times=num_trials)
+
+# random seed
+set.seed(130)
+
+# run the simulation
+for(i in 1:num_trials){  # repeat num_trials times
+  # simulate n coin flips
+  one_sample <- sample(c("Heads", "Tails"), 
+                       size = n, 
+                       p = c(0.5, 0.5),
+                       replace = TRUE)
+  # calculate the test statistic (proportion of heads)
+  simulated_proportion_heads[i] <- sum(one_sample == "Heads") / n
+}
+
+# save output to a new tibble
+coin_flips <- tibble(prop_heads = simulated_proportion_heads)
+
+# plot results
+coin_flips %>% ggplot(aes(x = prop_heads)) +
+  geom_histogram(bins=10, color="black", fill="gray") +
+  labs(x = "Proportion of Heads in 10 flips of a fair coin")
+```
+
+
+# Wheel of Destiny Activity
+
+Note: This may not work outside of class if the sheet does not have
+appropriate permissions set.
+
+```{r}
+# URL for Wheel of Destiny Activity
+url <- "https://docs.google.com/spreadsheets/d/1Nx2CqmqulBa966IXi8pyox_8qkocewD9L1jf-llut_4/edit?usp=sharing"
+classdata <- read_sheet(url)
+glimpse(classdata)
+```
+
+```{r}
+# Clean data and create a histogram of results
+num_flips <- 10  # the total number of flips each student is supposed to do
+classdata_clean <- classdata %>%
+  rename(class = `What class are you in right now?`,
+         total_flips = `How many flips did you make (enter just the number, no quotation marks or extra symbols)?`,
+         num_heads = `How many "heads" did you get (enter just the number, no quotation marks or extra symbols)?`) %>%
+  filter(class == "Prof Speagle (LEC0101, 11am - 1pm)") %>%  # LEC0101 only
+  filter(total_flips == num_flips) %>% # correct number of flips only
+  mutate(prop_heads = num_heads / total_flips)  # convert number to proportion
+glimpse(classdata_clean)
+```
+If there's a problem with the student data or form, change the value of the
+variable `data_problem` to `TRUE` and run the cell below.
+
+```{r}
+data_problem <- FALSE
+
+# If there are issues with student data / form, use the coin_flips data
+# we simulated earlier instead.
+if(data_problem){
+  classdata_clean <- coin_flips
+}
+```
+
+```{r}
+# plot our data distribution
+classdata_clean %>% ggplot(aes(x=prop_heads)) +
+  geom_histogram(binwidth=0.1, 
+                 color="black",
+                 fill="gray") +
+  labs(x = paste("Proportion of heads in ", num_flips, 
+                 " flips of a fair coin", sep="")) +
+  xlim(0,1)
+```
+```{r}
+# calculate 2-sided p-value
+
+prop_red_null <- 0.5  # null hypothesis value
+prop_red_wheel_of_destiny <- 0.4 # observed red spins out of 10 (class values)
+num_trials <- nrow(classdata_clean)
+
+pvalue_2side <- 
+  sum(abs(classdata_clean$prop_heads - prop_red_null) >= 
+      abs(prop_red_wheel_of_destiny - prop_red_null)) / num_trials
+
+pvalue_2side
+```
+
+```{r}
+# run hypothesis test
+
+alpha <- 0.05  # alpha level
+reject_null <- pvalue_2side < alpha  # reject the null?
+
+reject_null
+```
