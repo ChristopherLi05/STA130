@@ -1,6 +1,6 @@
 ---
 title: "STA130H1S -- Winter 2024"
-author: "N. Moon and J. Speagle [ADD YOUR NAME HERE]"
+author: "N. Moon and J. Speagle and Christopher Li"
 subtitle: Week 4 Practice Problems - Sample Answers
 output:
   pdf_document: default
@@ -37,7 +37,7 @@ Some of the optional questions have tests in MarkUs, but you won't be penalized 
 ## IMPORTANT - SETUP
 ```{r}
 # Instructions for how students should define tests
-STUDENT_NUMBER <- 1; # Replace this number by your real student number
+STUDENT_NUMBER <- 1010057028; # Replace this number by your real student number
 ```
 
 
@@ -51,7 +51,7 @@ Please answer each of the questions below in 1-3 sentences using your own words.
 \
 **(a)** If we look at the criminal trial example in the hypothesis test framework, what would be the **null hypothesis** and what would be the **alternative**?
 
-> *TYPE YOUR ANSWER HERE.*
+> The null hypothesis 
 
 \
 **(b)** In the context of this problem, describe what **rejecting the null hypothesis** would mean.
