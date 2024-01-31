@@ -51,27 +51,27 @@ Please answer each of the questions below in 1-3 sentences using your own words.
 \
 **(a)** If we look at the criminal trial example in the hypothesis test framework, what would be the **null hypothesis** and what would be the **alternative**?
 
-> The null hypothesis 
+> The null hypothesis would be "guilty" in this situation, and the alternative hypothesis would be "not guilty." This is because "not guilty" is a rejection of "guilty," so it's a rejection of the null hypothesis. 
 
 \
 **(b)** In the context of this problem, describe what **rejecting the null hypothesis** would mean.
 
-> *TYPE YOUR ANSWER HERE.*
+> Rejecting the null hypothesis (the defendent is not guilty) means that the judge has enough evidence to declare that the defendent is not guilty. 
 
 \
 **(c)** In the context of this problem, describe what **failing to reject the null hypothesis** would mean.
 
-> *TYPE YOUR ANSWER HERE.*
+> Failing to reject the null hypothesis (the defnedent is guilty) means that there wasn't enough evidence to declare that the defendent is not guilty. 
 
 \
 **(d)** In the context of this problem, describe what a **Type II error** would be.
 
-> *TYPE YOUR ANSWER HERE.*
+> A Type 2 Error happens when we fail to reject the null hypothesis but we should have instead. In this context, it means we wrongfully convicted someone who should've been let free.
 
 \
 **(e)**  In the context of this problem, describe what a **Type I error** would be.
 
-> *TYPE YOUR ANSWER HERE.*
+> A Type 1 Error happens when we reject the null hypothesis but we shouldn't have. In this contxt, it means we have let someone go free when they should've been convicted guilty.
 
 \
 **(f)** In general, the Canadian legal system is designed to preferentially *avoid* what types of errors?
@@ -83,22 +83,22 @@ Please answer each of the questions below in 1-3 sentences using your own words.
 
 ```{r}
 # Replace NULL below by your answer ("A", "B", "C", or "D")
-Q1f_choice <- NULL
+Q1f_choice <- "B"
 ```
 
 Describe what your answer above means in your own words.
 
-> *TYPE YOUR ANSWER HERE.*
+> We should focus on reducing the amount of wrongful convictions but we should also try and reduce the amount of people who walk free when they shouldn't.
 
 
 **(g) [OPTIONAL]** In a criminal case, the standard of proof needed for a guilty verdict is "proof beyond a reasonable doubt". What $\alpha$-level do you think this corresponds to and why? (As a reminder: an $\alpha$-level is the threshold used to reject the null hypothesis in favour of the alternative when the $p$-value $p < \alpha$. It controls the Type I error rate.)
 
-> *TYPE YOUR ANSWER HERE.*
+> The alpha level will probably be around 0.01 (extremely certain) to 0.05 (standard used for statistical signifigance). 
 
 
 **(h) [OPTIONAL]** In a civil case, the standard of proof needed for someone to be found liable is "on balance of probabilities". What $\alpha$-level do you think this corresponds to and why? 
 
-> *TYPE YOUR ANSWER HERE.*
+> The alpha level will probably be around 0.05 (standard used for statistical signifigance) to 0.10 (semi-confident that it is signifigant).
 
 \newpage
 # Question 2: Instagram Usage
@@ -114,11 +114,11 @@ Roughly 38% of the world's 5.3 billion active internet users regularly access In
 
 Please write your answer below using math notation including $H_0$, $H_1$, $f_{\rm stu}$, and/or $f_{\rm pop}$.
 
-> *TYPE YOUR ANSWER HERE.*
+> $H_0: f_{\rm stu} = f_{\rm pop}$, $H_1: f_{\rm stu} != f_{\rm pop} $
 
 Now, please write a sentence describing the claims of the null and alternative hypotheses without any math notation ($H_0$, $H_1$, $f_{\rm stu}$, and/or $f_{\rm pop}$).
 
-> *TYPE YOUR ANSWER HERE.*
+> The null hypothesis is that the frequencey of students who use instagram is the same as the frequency of people (in general) who use instagram. The alternative hypothesis is that the frequency of students who use instagram is not the same as the frequency of people (in general) who use instagram.
 
 \
 **(c)** Below is R code that simulates the number of students who use Instagram in **ONE random sample** of $n=600$ DoSS students **under the null hypothesis**.
@@ -153,7 +153,7 @@ How many regular Instagram users do you have in your simulated sample of student
 
 ```{r}
 # Replace NULL below by your answer
-Q2c_number_of_instagram_users_in_sample_of_DoSS <- NULL
+Q2c_number_of_instagram_users_in_sample_of_DoSS <- 600
 ```
 
 **(d) [OPTIONAL]** Use `geom_bar()` to visualize the number of students who regularly use Instagram versus those who don't from your simulated sample with a bar plot.
@@ -161,7 +161,10 @@ Q2c_number_of_instagram_users_in_sample_of_DoSS <- NULL
 *Hint: You can make a vector a column of a `tibble` like this: `tibble(flips = c("Head", "Tail", "Tail"))`.*
 
 ```{r}
-# code your answer here
+data.frame(resp = responses) %>% ggplot(aes(x=resp)) +
+  geom_bar(color = "black",
+           fill = "gray") +
+  labs(x = "Instagram")
 ```
 
 \
@@ -169,20 +172,20 @@ Q2c_number_of_instagram_users_in_sample_of_DoSS <- NULL
 
 ```{r}
 # Replace NULL below by your answer
-Q2e_fhat_stu_sim <- NULL
+Q2e_fhat_stu_sim <- sum(responses == "Yes") / n_sample
 ```
 
 How does the simulated fraction $\hat{f}_{\rm stu,sim}$ compare to the assumed student fraction under the null hypothesis $f_{\rm stu}$ and to the observed fraction $\hat{f}_{\rm stu}$ from the $n = 600$ sampled DoSS students?
 
 ```{r}
 # Replace NULL below by your answer
-Q2e_f_stu <- NULL
-Q2e_fhat_stu <- NULL
+Q2e_f_stu <- 0.38
+Q2e_fhat_stu <- 0.42
 ```
 
 Please describe any differences you observe between the three numbers above in 1-3 sentences below.
 
-> *TYPE YOUR ANSWER HERE.*
+> Our simulation gave us a 37% usage rate in students, and in reality there's an about 38% usage rate in the general public. If we soley look at students however, we get a 42% usage rage among students. 
 
 \
 **(f)** The code below simulates the **sampling distribution** of the test statistic $\hat{f}_{\rm stu}$, i.e. the distribution of the simulated values $\hat{f}_{\rm stu,sim}$ under the null hypothesis $H_0$.
@@ -198,7 +201,7 @@ print(STUDENT_NUMBER)     # Make sure that this is your student number
                           # then come back to this question
                           # Make sure you don't share screenshots of your 
                           # solution that share your student number with classmates
-set.seed(STUDENT_NUMBER * 2)  # Do not change this line
+set.seed(STUDENT_NUMBER + 2)  # Do not change this line
 
 # setup
 n_trials <- 1000  # number of trials
@@ -222,35 +225,37 @@ What are the simulated values that comprise the sampling distribution?
 
 ```{r}
 # Replace NULL with your answer below
-Q2f_vector_of_simulated_test_statistics <- NULL
+Q2f_vector_of_simulated_test_statistics <- fhat_stu_simulations
 ```
 What are its mean and standard deviation?
 
 ```{r}
 # Replace NULL with your answer below
-Q2f_mean_of_simulated_test_statistics <- NULL
-Q2f_stddev_of_simulated_test_statistics <- NULL
+Q2f_mean_of_simulated_test_statistics <- mean(fhat_stu_simulations)
+Q2f_stddev_of_simulated_test_statistics <- sd(fhat_stu_simulations)
 ```
 
 \
 **(g) [OPTIONAL]** Make an appropriate plot to visualize your simulated sampling distribution.
 
 ```{r}
-# Code your answer here
+data.frame(data = fhat_stu_simulations) %>% ggplot(aes(x = data)) +
+  geom_histogram(bins=10, color="black", fill="gray") +
+  labs(x = "Proportion of students who use instagram")
 ```
 
 Describe the distribution in 1-2 sentences using some of the key words/phrases we have learned over the past few weeks.
 
-> *TYPE YOUR ANSWER HERE.*
+> This distribution is unimodal and approximately normal. It has a center at roughly 0.375 and a range of approximate 0.15. There does not seem to be any tails. 
 
 \
 **(h)** What is the definition of a **$p$-value**?
 
-> *TYPE YOUR ANSWER HERE.*
+> Probability that achieving the observed statistic (or worse) is from chance alone. 
 
 Please comment on the difference between a **1-sided** versus a **2-sided** $p$-value and explain why the $p$-value associated with the null hypothesis $H_0$ and alternative $H_1$ hypothesis in this question is 2-sided rather than 1-sided.
 
-> *TYPE YOUR ANSWER HERE.*
+> 1 sided p values only look at 1 side of the distribution (why it's called one sided). The alternative hypothesis is usually > or <. 2 sided p values look at both sides of the distriubtion, so the alternative hypothesis is usally !=.
 
 \
 **(i)** Compute the $p$-value based on the null hypothesis $H_0$ using the values of $\hat{f}_{\rm stu,sim}$ you computed from the sampling distribution, the observed test statistic $\hat{f}_{\rm stu}$, and the assumed true value under the null hypothesis $f_{\rm stu}$. 
@@ -259,7 +264,7 @@ Please comment on the difference between a **1-sided** versus a **2-sided** $p$-
 
 ```{r}
 # Replace NULL with your answer below
-Q2i_pvalue_2sided <- NULL
+Q2i_pvalue_2sided <- sum(abs(fhat_stu_simulations - 0.38) >= abs(0.42 - 0.38)) / n_trials
 ```
 
 \
@@ -268,7 +273,7 @@ Q2i_pvalue_2sided <- NULL
 ```{r}
 # Replace NULL with your answer below (either TRUE or FALSE)
 alpha_level <- 0.05
-Q2j_reject <- NULL
+Q2j_reject <- TRUE
 ```
 
 \
@@ -281,7 +286,7 @@ Q2j_reject <- NULL
 
 ```{r}
 # Replace NULL by your answer ("A", "B", "C", or "D")
-Q2k_choice <- NULL
+Q2k_choice <- "D"
 ```
 
 \
@@ -296,7 +301,7 @@ print(STUDENT_NUMBER)     # Make sure that this is your student number
                           # then come back to this question
                           # Make sure you don't share screenshots of your 
                           # solution that share your student number with classmates
-set.seed(STUDENT_NUMBER * 3)  # Do not change this line
+set.seed(STUDENT_NUMBER + 3)  # Do not change this line
 
 # setup
 n_trials <- 1000  # number of trials
@@ -316,16 +321,16 @@ for (i in 1:n_trials){
 
 ```{r}
 # Replace NULL with your answer below
-Q2l_pvalue_2sided <- NULL
+Q2l_pvalue_2sided <- sum(abs(fhat_stu_simulations - 0.38) >= abs(0.42 - 0.38)) / n_trials
 
 # Replace NULL with your answer below
 alpha_level <- 0.05
-Q2l_reject <- NULL
+Q2l_reject <- FALSE
 ```
 
 How much do the results change?
 
-> *TYPE YOUR ANSWER HERE.*
+> My results did not change at all.
 
 \
 **(m) [OPTIONAL]** Using the slightly modifed code below, re-compute your $p$-value but now using 100 times more trials for both the original random number seed and the slighty-modified seed value.
@@ -339,7 +344,7 @@ print(STUDENT_NUMBER)     # Make sure that this is your student number
                           # then come back to this question
                           # Make sure you don't share screenshots of your 
                           # solution that share your student number with classmates
-set.seed(STUDENT_NUMBER * 2)  # Do not change this line
+set.seed(STUDENT_NUMBER + 2)  # Do not change this line
 
 # setup
 n_trials <- 100000  # number of trials
@@ -380,7 +385,7 @@ print(STUDENT_NUMBER)     # Make sure that this is your student number
                           # then come back to this question
                           # Make sure you don't share screenshots of your 
                           # solution that share your student number with classmates
-set.seed(STUDENT_NUMBER * 3)  # Do not change this line
+set.seed(STUDENT_NUMBER + 3)  # Do not change this line
 
 # setup
 n_trials <- 100000  # number of trials
@@ -400,16 +405,16 @@ for (i in 1:n_trials){
 
 ```{r}
 # Replace NULL with your answer below
-Q2m_pvalue_2sided_v2 <- NULL
+Q2m_pvalue_2sided_v2 <- sum(abs(fhat_stu_simulations - 0.38) >= abs(0.42 - 0.38)) / n_trials
 
 # Replace NULL with your answer below
 alpha_level <- 0.05
-Q2m_reject_v2 <- NULL
+Q2m_reject_v2 <- TRUE
 ```
 
 How much do the results change now?
 
-> *TYPE YOUR ANSWER HERE.*
+> We rejected the null hypothesis. 
 
 
 # [OPTIONAL] Question 3: Scottish Medicine
@@ -423,14 +428,14 @@ A Scottish woman noticed that her husband's scent changed. Six years later he wa
 
 **Hint: You might be able to draw some inspiration from some of the examples discussed in Week 4's class meeting.*
 
-> *TYPE YOUR ANSWER HERE.*
+> The sampling distribution will be approximately normal with a center at 6. 
 
 \
 **(b)** Write down a hypothesis test that the woman being a lucky guesser (our null hypothesis, $H_0$) as opposed to having some ability to correctly identify Parkinson's disease by smell (the alternative hypothesis $H_1$).
 
 *Hint: Think carefully about whether you are performing a 1-sided or 2-sided hypothesis test here. How would you interpret your alternative hypothesis in each case?*
 
-> *TYPE YOUR ANSWER HERE.*
+> Null hypothesis is that the woman truly has a 50% chance of guessing correctly. Alternative hypothesis is that the woman has >50% chance of guessing correctly.
 
 \
 **(c)** Carry out a simulation study and plot the simulated sampling distribution under the null hypothesis $H_0$. Then, compute the $p$-value given that the woman correctly classified 12 of 12 t-shirts (i.e. our observed test statistic).
@@ -441,12 +446,27 @@ A Scottish woman noticed that her husband's scent changed. Six years later he wa
 set.seed(STUDENT_NUMBER + 3)  # REQUIRED so the results are reproducible!
 
 # write your code below
+# setup
+n_trials <- 100000  # number of trials
+n_sample <- 12  # number of observations in random sample
+options <- c("Yes", "No")  # options to respond
+p_options <- c(0.5, 1 - 0.5)  # probabilities for both options
+
+# simulate!
+fhat_tshirt_simulations <- rep(NA, n_trials)
+for (i in 1:n_trials){
+  responses <- sample(options, size=n_sample, prob=p_options, replace=TRUE)
+  fhat_tshirt_sim <- sum(responses == "Yes") / n_sample
+  fhat_tshirt_simulations[i] <- fhat_tshirt_sim
+}
+
+one_sided <- sum(fhat_tshirt_simulations >= 1) / n_trials
 ```
 
 \
 **(d)** Given an $p < \alpha=0.05$ rejection rule, what is your conclusion about this hypothesis test based on your computed $p$-value?
 
-> *TYPE YOUR ANSWER HERE.*
+> The woman is most likely able to smell Parkisan's disease. 
 
 \
 **(e)** Actually, initially the woman correctly identified all 6 people who had been diagnosed with Parkinson's but *incorrectly* identified one of the others as having Parkinson's. It was only eight months later that the final individual was diagnosed with the disease. Assuming only 11 of 12 guesses being correct, what is the new associated $p$-value?
@@ -455,9 +475,10 @@ set.seed(STUDENT_NUMBER + 3)  # REQUIRED so the results are reproducible!
 
 ```{r}
 # write your code below
+one_sided_2 <- sum(fhat_tshirt_simulations >= 11/12) / n_trials
 ```
 
 \
 **(f)** Based on our $p < \alpha=0.05$ rejection rule, does the conclusion of the hypthesis test the same for an observed test statistic of 11/12 compared an observed test statistic of 12/12?
 
-> *TYPE YOUR ANSWER HERE.*
+> The conclusion is still the same. 
