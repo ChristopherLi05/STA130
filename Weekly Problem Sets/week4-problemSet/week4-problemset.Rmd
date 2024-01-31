@@ -83,7 +83,7 @@ Please answer each of the questions below in 1-3 sentences using your own words.
 
 ```{r}
 # Replace NULL below by your answer ("A", "B", "C", or "D")
-Q1f_choice <- "B"
+Q1f_choice <- "A"
 ```
 
 Describe what your answer above means in your own words.
@@ -153,7 +153,7 @@ How many regular Instagram users do you have in your simulated sample of student
 
 ```{r}
 # Replace NULL below by your answer
-Q2c_number_of_instagram_users_in_sample_of_DoSS <- 600
+Q2c_number_of_instagram_users_in_sample_of_DoSS <- sum(responses == "Yes")
 ```
 
 **(d) [OPTIONAL]** Use `geom_bar()` to visualize the number of students who regularly use Instagram versus those who don't from your simulated sample with a bar plot.
@@ -273,7 +273,7 @@ Q2i_pvalue_2sided <- sum(abs(fhat_stu_simulations - 0.38) >= abs(0.42 - 0.38)) /
 ```{r}
 # Replace NULL with your answer below (either TRUE or FALSE)
 alpha_level <- 0.05
-Q2j_reject <- TRUE
+Q2j_reject <- FALSE
 ```
 
 \
