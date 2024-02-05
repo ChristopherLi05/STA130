@@ -336,14 +336,14 @@ glimpse(anxiety_data)
 
 *Note: Depending on your choice of alternative hypothesis, your answers below might involve either 1-sided or 2-sided tests. Please make sure all your calculations remain consistent with your initial choice.*
 
-> *WRITE YOUR ANSWER HERE.*
+> $$H_0: a_l = a_h, H_a: a_l < a_h$$
 
 \
 **(b)** Revisit your statements regarding the null hypotheses above with **confounding variables** in mind. In particular, consider that social media usage may be a self selecting process, with social media users potentially already more anxious people on average regardless of their social media usage. If we make a determination about the null hypothesis, are we actually addressing the initial question of "whether or not usage of social media increases anxiety levels"? Or are we just using a hypothesis test to examine if there is an observable difference between the two groups (regardless of its causes)?
 
 *Note: This distinction is often referred to using the cautionary phrase "correlation does not imply causation".*
 
-> *WRITE YOUR ANSWER HERE.*
+> We are more looking at whether or not there's an observable difference between these two groups.
 
 \
 **(c)** Construct boxplots of `anxiety_score` for the two levels of social media usage. Then write 2-3 sentences describing and comparing the distributions of anxiety scores across the two social media usage groups.
@@ -356,17 +356,20 @@ anxiety_data %>%
   geom_boxplot()
 ```
 
-> *WRITE YOUR ANSWER HERE.*
+> The median anxiety level of low social media users is lower than the median anxiety level of higher social media usage. In addition, the range of low social media users is vastly higher than the range of high social media users. 
 
 What do these data visually suggest regarding the claim that the **median** anxiety level is different for those who use social media more than 2 hours per day compared to those who use social media less than 2 hours per day? 
 
-> *WRITE YOUR ANSWER HERE.*
+> It is lower.
 
 \
 **(d)** Compute the difference in the medians between the two samples (i.e. the 2-sample test statistic).
 
 ```{r}
 # code your answer below
+
+# low - high
+median_diff <- anxiety_data %>% group_by(social_media_usage) %>% summarize(medians=median(anxiety_score), .groups="drop") %>% summarize(n = diff(medians)) %>% as.numeric()
 ```
 
 \
@@ -385,23 +388,40 @@ set.seed(STUDENT_NUMBER)  # REQUIRED so the random sample is reproducible!
 ### DO NOT CHANGE THE CODE ABOVE ####
 
 # code your answer below
+n_trials <- 1000  # number of permutations
+
+# simulate!
+delta_ahat_simulations <- rep(NA, n_trials)
+for(i in 1:n_trials){
+  # perform a random permutation
+  simdata <- 
+    anxiety_data %>%
+    mutate(social_media_usage = sample(social_media_usage, replace=FALSE))
+  
+  # compute the simulated test statistic
+  delta_ahat_sim <- 
+    simdata %>% group_by(social_media_usage) %>% summarize(medians=median(anxiety_score), .groups="drop") %>% summarize(n = diff(medians)) %>% as.numeric()
+  # store the simulated value
+  delta_ahat_simulations[i] <- delta_ahat_sim
+}
+
 ```
 \
 **(f)** Compute the $p$-value based on the null hypothesis $H_0$.
 
 ```{r}
 # Replace NULL with your answer below
-Q3f_pvalue <- NULL
+Q3f_pvalue <- sum(delta_ahat_simulations <= median_diff) / n_trials
 ```
 
 Based on this $p$-value, would you reject the null hypothesis in favour of the alternative given an $\alpha$ level (i.e. $p < \alpha$) of $\alpha = 0.05$?
 
 ```{r}
 # Replace NULL with your answer below (either TRUE or FALSE)
-Q3f_reject <- NULL
+Q3f_reject <- TRUE
 ```
 
 \
 **(g)** Do these data support the claim that the **median** anxiety level is different for those who use social media more than 2 hours per day compared to those who use social media less than 2 hours per day?  How about the claim that "usage of social media increases anxiety levels"?
 
-> *WRITE YOUR ANSWER HERE.*
+> Yes it does say that there is a difference, however we can't make any claims about causality. 
