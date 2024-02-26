@@ -1,0 +1,345 @@
+---
+title: "Week 7 Class Code"
+author: "Nathalie Moon and Josh Speagle"
+date: "2024-02-26"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+```
+
+
+
+# Code from class slides
+
+## Simulating sampling distribution for the real wheel of destiny
+```{r}
+# In reality, I know the true proportions because I designed the 
+# wheel of destiny
+# True weights, alternating red first (total = 4) then white (total=4.2)
+# c(1,1,1,1,1,1.05,1.05,1.05,1.05)
+# So P(red) = 4/8.4 = 0.0.4762
+# and P(white) = 4.4/8.4 = 0.5238
+
+set.seed(10)
+reps <- 1000
+n <- 10
+estimated_prop_red <- rep(NA, reps)
+for(i in 1:reps){
+  current_sample <- sample(c("red", "white"), size=n, prob=c(4/8.4, 4.4/8.4), replace=TRUE)
+  estimated_prop_red[i] <- sum(current_sample == "red") / n
+}
+
+tibble(estimates = estimated_prop_red) %>% 
+  ggplot(aes(x=estimates)) +
+  geom_histogram(breaks=0:10/10, color="black", fill="gray") +
+  xlim(c(0,1)) +
+  labs(title=paste("Sampling distribution for proportion of red based, with n=", n, sep=""))
+
+set.seed(100)
+n <- 100
+estimated_prop_red <- rep(NA, reps)
+for(i in 1:reps){
+  current_sample <- sample(c("red", "white"), size=n, prob=c(4/8.4, 4.4/8.4), replace=TRUE)
+  estimated_prop_red[i] <- sum(current_sample == "red") / n
+}
+
+tibble(estimates = estimated_prop_red) %>% 
+  ggplot(aes(x=estimates)) +
+  geom_histogram(breaks=0:20/20, color="black", fill="gray") +
+  xlim(c(0,1)) +
+  labs(title=paste("Sampling distribution for proportion of red based, with n=", n, sep=""))
+
+set.seed(500)
+n <- 500
+estimated_prop_red <- rep(NA, reps)
+for(i in 1:reps){
+  current_sample <- sample(c("red", "white"), size=n, prob=c(4/8.4, 4.4/8.4), replace=TRUE)
+  estimated_prop_red[i] <- sum(current_sample == "red") / n
+}
+
+tibble(estimates = estimated_prop_red) %>% 
+  ggplot(aes(x=estimates)) +
+  geom_histogram(breaks=0:50/50, color="black", fill="gray") +
+  xlim(c(0,1)) +
+  labs(title=paste("Sampling distribution for proportion of red based, with n=", n, sep=""))
+```
+
+
+
+## NYC flights data
+```{r}
+# Extract flights from NY to SF, with no missing values
+SF <- flights %>% filter(dest=="SFO" & !is.na(arr_delay))
+
+
+# Calculate mean delay, median delay, and maximum delay for the population
+SF %>% summarise(
+  mean_delay = mean(arr_delay),
+  median_delay = median(arr_delay),
+  max_delay = max(arr_delay))
+
+
+# Save the population mean so we can use it later
+population_mean <- SF %>%
+  summarize(population_mean_delay = 
+              mean(arr_delay)) %>% 
+  as.numeric()
+
+population_mean
+
+# Plot distribution of arrival times, with a blue dot for the population mean
+SF %>% ggplot(aes(x=arr_delay)) +
+  geom_histogram(binwidth=5) + 
+  geom_point(aes(x=mean(SF$arr_delay), y=0), 
+             color="blue", size=6) + 
+  labs(x="Arrival Delays (actual-scheduled) in minutes for all flights", 
+       title=paste("Distribution of arrival delays for all flights, \n with population mean of ", round(mean(SF$arr_delay), digits=2), sep="")) +
+  theme(text=element_text(size=18))
+
+```
+
+```{r}
+# Get one sample of 25 flights from our population
+set.seed(987)
+sample25 <- SF %>% sample_n(size=25, replace = FALSE)
+
+# Get summary statistics for this sample
+sample25 %>% summarise(mean_delay = mean(arr_delay),
+                 median_delay = median(arr_delay),
+                 max_delay = max(arr_delay))
+```
+
+```{r}
+
+# Let's look at other random samples of size n=25 from the population (and plot them)
+set.seed(1234)
+d25 <- SF %>% sample_n(size = 25, replace=FALSE) 
+d25 %>% ggplot(aes(x=arr_delay)) + geom_histogram(binwidth=5) +
+  geom_point(aes(x=mean(d25$arr_delay), y=0), color="red", size=4) + 
+  labs(x="Arrival Delays (actual-scheduled) in minutes for 25 flights", 
+       title=paste("Sample of 25 flights, with sample mean of ", mean(d25$arr_delay), sep="")) +
+  xlim(-100, 500) + 
+  theme(text=element_text(size=15))
+
+d25 <- SF %>% sample_n(size = 25, replace=FALSE) 
+d25 %>% ggplot(aes(x=arr_delay)) + geom_histogram(binwidth=5) +
+  geom_point(aes(x=mean(d25$arr_delay), y=0), color="red", size=4) + 
+  labs(x="Arrival Delays (actual-scheduled) in minutes for 25 flights", 
+       title=paste("Sample of 25 flights, with sample mean of ", mean(d25$arr_delay), sep="")) +
+  xlim(-100, 500) + 
+  theme(text=element_text(size=15))
+
+d25 <- SF %>% sample_n(size = 25, replace=FALSE) 
+d25 %>% ggplot(aes(x=arr_delay)) + geom_histogram(binwidth=5) +
+  geom_point(aes(x=mean(d25$arr_delay), y=0), color="red", size=4) + 
+  labs(x="Arrival Delays (actual-scheduled) in minutes for 25 flights", title=paste("Sample of 25 flights, with sample mean of ", mean(d25$arr_delay), sep=""))  + 
+  xlim(-100, 500) +
+  theme(text=element_text(size=15)) 
+```
+
+
+### Estimate the sampling distribution of mean arrival time by getting many samples of size 25 from the population
+```{r}
+set.seed(98)
+sample_means <- rep(NA, 1000) # where we'll store the means
+
+for(i in 1:1000){
+  sample25 <- SF %>% sample_n(size=25)
+  sample_means[i] <- as.numeric(sample25 %>%
+                        summarize(mean(arr_delay)))
+}
+
+sample_means <- data_frame(mean_delay = sample_means)
+
+ggplot(sample_means, aes(x=mean_delay)) + 
+  geom_histogram(binwidth=5, color="black", fill="gray") +
+  labs(x="Means from samples of size 25",
+  title="Sampling distribution for the mean of arr_delay")
+```
+
+
+### The Bootstrap method
+```{r}
+set.seed(113)
+
+# Get one sample of size 200
+observed_data <- SF %>%   sample_n(size=200)
+
+# Plot distribution of arrival delay for observed sample
+hist_sample <- observed_data %>% 
+  ggplot(aes(arr_delay)) +
+  geom_histogram(binwidth=25,
+      fill="royalblue3", color="black") +
+  theme(text=element_text(size=20)) +
+  labs(title="Histogram of arrival delay for a sample of 
+       n=200 from the population",
+       x="Arrival delay (in minutes)")
+hist_sample
+
+# Calculate mean arrival delay for this sample
+obs_mean <- observed_data %>% 
+  summarize(mean(arr_delay))
+as.numeric(obs_mean)
+
+
+
+## One bootstrap sample from our original sample
+boot_samp <- observed_data %>% 
+  sample_n(size=200, replace=TRUE)
+
+boot_samp %>% 
+  ggplot(aes(arr_delay)) +
+  geom_histogram(binwidth=25,
+      fill="slategray2", color="gray") +
+  theme(text=element_text(size=20)) +
+  labs(title="Histogram of arrival delay for a 
+      bootstrap sample (n=200)",
+       x="Arrival delay (in minutes)") +
+  xlim(-100,375)
+
+boot_mean <- boot_samp %>% 
+  summarize(mean_delay = 
+              mean(arr_delay))
+as.numeric(boot_mean)
+
+
+## Another bootsrap sample from our original sample
+boot_samp <- observed_data %>% 
+  sample_n(size=200, replace=TRUE)
+
+boot_samp %>% 
+  ggplot(aes(arr_delay)) +
+  geom_histogram(binwidth=25,
+      fill="slategray2", color="gray") +
+  theme(text=element_text(size=20)) +
+  labs(title="Histogram of arrival delay for a 
+      bootstrap sample (n=200)",
+       x="Arrival delay (in minutes)") +
+  xlim(-100,375)
+
+boot_mean <- boot_samp %>% 
+  summarize(mean_delay = 
+              mean(arr_delay))
+as.numeric(boot_mean)
+
+
+
+## And another bootsrap sample from our original sample!
+boot_samp <- observed_data %>% 
+  sample_n(size=200, replace=TRUE)
+
+boot_samp %>% 
+  ggplot(aes(arr_delay)) +
+  geom_histogram(binwidth=25,
+      fill="slategray2", color="gray") +
+  theme(text=element_text(size=20)) +
+  labs(title="Histogram of arrival delay for a 
+      bootstrap sample (n=200)",
+       x="Arrival delay (in minutes)") +
+  xlim(-100,375)
+
+boot_mean <- boot_samp %>% 
+  summarize(mean_delay = 
+              mean(arr_delay))
+as.numeric(boot_mean)
+```
+
+
+```{r}
+### Get many(!!) bootstrap samples
+set.seed(888)
+
+boot_means <- rep(NA, 5000) # where we'll store the means
+for(i in 1:5000){
+  boot_samp <- observed_data %>% sample_n(size=200, replace=TRUE)
+  boot_means[i] <- 
+    as.numeric(boot_samp %>% 
+                 summarize(mean_delay = mean(arr_delay)))
+}
+boot_means <- data_frame(mean_delay = boot_means)
+
+ggplot(boot_means, aes(x=mean_delay)) +
+  geom_histogram(binwidth=1, fill="tan2", color="black") + 
+  labs(x="Means from bootstrap samples", 
+       title="Bootstrap sampling distribution for the mean arrival delay")
+
+```
+
+
+### Calculating quantiles in R
+```{r}
+# Calculate Q1, median, and Q3
+quantile(boot_means$mean_delay, c(0.25, 0.5, 0.75))
+# Can also calculate any other percentiles
+quantile(boot_means$mean_delay, c(0.025, 0.4, 0.57))
+```
+
+```{r}
+ggplot(boot_means, aes(x=mean_delay)) +
+  geom_histogram(binwidth=1, fill="tan2", color="black") + 
+  labs(x="Means from bootstrap samples", 
+       title="Bootstrap sampling distribution for the mean arrival delay") + 
+  geom_vline(xintercept=quantile(boot_means$mean_delay, 0.025), col="blue") +
+  geom_vline(xintercept=quantile(boot_means$mean_delay, 0.975), col="blue")
+```
+
+
+## Simulation to illustrate how we are 95% confident that a 95% confidence interval contains the true value of the population parameter
+
+Note: Since this takes a long time to run, I have set eval=FALSE to speed up knitting the document. If you would like to run it yourself, replace this with eval=TRUE in the code chunk options (between the curly brackets)
+
+```{r, eval=FALSE}
+n_intervals <- 100
+perc025 <- rep(NA, n_intervals)  # where we'll store the lower limit of the intervals
+perc975 <- rep(NA, n_intervals)  # where we'll store the upper limit of the intervals
+
+sample_size <- 200
+
+replicates <- 5000
+
+for (i in 1:n_intervals){
+  # randomly sample a data set
+  observed_data <- SF %>% sample_n(size = sample_size, replace = FALSE)
+  
+  # get the bootstrap means
+  boot_means <- rep(NA, replicates)  # where we'll store the bootstrap means
+  for (j in 1:replicates)
+  {
+    boot_samp <- observed_data %>% sample_n(size = sample_size, replace=TRUE)
+    boot_means[j] <- as.numeric(boot_samp %>% summarize(mean(arr_delay)))
+  }
+  # get the 95% interval for this set of bootstrap means
+  perc025[i] <- quantile(boot_means, 0.025)
+  perc975[i] <- quantile(boot_means, 0.975)
+  
+  print(c(i,perc025[i], perc975[i]))
+}
+# write results to a file
+bootstrapCIs <- data_frame(perc025, perc975)
+write.csv(bootstrapCIs, file = "bootstrapCIs.csv",row.names=FALSE)
+```
+
+
+```{r, echo=F, fig.height=3}
+manyCIs <- read.csv("bootstrapCIs.csv")
+manyCIs <- manyCIs %>% mutate(capture = ifelse(perc025 <= as.numeric(population_mean) & perc975 >= as.numeric(population_mean), "yes", "no"))
+manyCIsforplot <- data_frame(
+  number=c(1:100, 1:100), 
+  limits=c(manyCIs$perc025, manyCIs$perc975),
+  capture=c(manyCIs$capture, manyCIs$capture))
+ggplot(manyCIsforplot, aes(x=limits, y=number, group=number, color=capture)) +
+  geom_point(size=2) +
+  geom_line() +
+  geom_vline(xintercept=as.numeric(population_mean), colour="black") +
+  labs(x="Confidence interval limits", y="",
+       title="100 bootstrap confidence intervals for the mean, \n based on random samples from the population (n=200)") +
+  theme_bw()
+```
