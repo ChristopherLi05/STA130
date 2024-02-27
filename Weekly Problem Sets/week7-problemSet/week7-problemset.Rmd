@@ -223,7 +223,7 @@ sim %>%  ggplot(aes(median)) + geom_histogram(color = "black",
 median <- quantile(sim$median, p=0.5)
 
 Q2c_95_ci_lower_bound <- quantile(sim$median, p=0.05)
-Q2c_95_ci_upper_bound <- quantile(sim$median, p=0.85)
+Q2c_95_ci_upper_bound <- quantile(sim$median, p=0.95)
 ```
 
 
