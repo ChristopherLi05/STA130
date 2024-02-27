@@ -38,7 +38,7 @@ Some of the optional questions have tests in MarkUs, but you won't be penalized 
 ## IMPORTANT - SETUP
 ```{r}
 # Instructions for how students should define tests
-STUDENT_NUMBER <- 130;  # replace 130 by your real student number
+STUDENT_NUMBER <- 1010057028;  # replace 130 by your real student number
 ```
 
 
@@ -60,16 +60,17 @@ roaddata <- tibble(road_side)
 ### (a) Are the observations in `roaddata` the entire population or a sample from a population? Write one sentence summarizing your answer and replace NULL by "SAMPLE" or "POPULATION" in the code chunk below
 
 ```{r}
-Q1a_sample_vs_pop <- NULL
+Q1a_sample_vs_pop <- "POPULATION"
 ```
 
+The observations in `roadata` is the entire population.
 
 ### (b) Modify the line of code below to use the `sample_n()` function to select a random sample of different 100 countries/regions. Call this new data `Q1b_road_sample`. 
 
 ```{r}
 set.seed(STUDENT_NUMBER) # Do not change this line of code
 
-Q1b_road_sample <- roaddata %>% sample_n(size=10)
+Q1b_road_sample <- roaddata %>% sample_n(size=100)
 ```
 
 
@@ -78,8 +79,8 @@ Q1b_road_sample <- roaddata %>% sample_n(size=10)
 #### (i) Using the `road_sample` sample you created in (b), we want to simulate 2000 bootstrap samples and calculate the proportion of countries who drive on the left in each of these bootstrap samples. Start by setting up values for the simulation by storing the correct values in the variables below.
 
 ```{r}
-Q1c_i_repetitions <- 1 ## Replace 1 by your answer
-Q1c_i_simulated_values <- NULL ## Replace NULL by your answer
+Q1c_i_repetitions <- 2000 ## Replace 1 by your answer
+Q1c_i_simulated_values <- rep(NA, 2000) ## Replace NULL by your answer
 ```
 
 
@@ -105,7 +106,9 @@ boot_p <- tibble(boot_p)
 
 ```{r}
 # Produce a histogram of the bootstrap sampling distribution
-
+boot_p %>% ggplot(aes(x=boot_p)) + geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 10)
 ```
 
 
@@ -116,8 +119,8 @@ boot_p <- tibble(boot_p)
 # Example: suppose you wanted to calculate the median
 median <- quantile(boot_p$boot_p, p=0.5)
 
-Q1d_90_ci_lower_bound <- NULL
-Q1d_90_ci_upper_bound <- NULL
+Q1d_90_ci_lower_bound <- quantile(boot_p$boot_p, p=0.05)
+Q1d_90_ci_upper_bound <- quantile(boot_p$boot_p, p=0.95)
 
 ```
 
@@ -135,9 +138,9 @@ Q1d_90_ci_upper_bound <- NULL
 
 
 ```{r}
-Q1e_i <- NULL
-Q1e_ii <- NULL
-Q1e_iii <- NULL
+Q1e_i <- FALSE
+Q1e_ii <- FALSE
+Q1e_iii <- TRUE
 
 ```
 
@@ -146,7 +149,7 @@ Q1e_iii <- NULL
 ### (f) If we want to be *more* confident about capturing the true proportion of all countries who drive on the left side, we can increase the confidence level (for example, instead of 95%, we could use 98%). When we increase the confidence level, does this make the confidence interval *wider* or *narrower*? Replace NULL by either "WIDER" or "NARROWER" below, and explain your answer in 1-2 sentences.  
 
 ```{r}
-Q1f <- NULL
+Q1f <- "WIDER"
 ```
 
 
@@ -155,7 +158,7 @@ Q1f <- NULL
 $$H_0: p = 0.5$$ versus $$H_A: p \ne 0.5$$
 where $p$ is the proportion of countries/regions who drive to the left. Using the sampled data, we would get a P-value of 0.0007.  Do this hypothesis test and the confidence interval you produced in (d) tell a similar story? Why or why not?
 
-
+Yes. The 95% confidence interval i got was from 0.16-0.3, so 0.5 is not within this range. Since there's a P-value of 0.0007, then we have strong evidence to reject the null hypothesis. 
 
 
 \newpage
@@ -167,19 +170,26 @@ The data set `auto_claims.csv` includes claims paid (in USD) to a sample of auto
 ```{r, fig.height=4}
 AutoClaims <- read_csv("auto_claims.csv")
 glimpse(AutoClaims)
+
+AutoClaims %>% select(PAID) %>% summarize(n = n(), median=median(PAID), iqr = IQR(PAID), range=max(PAID)-min(PAID))
+
+AutoClaims %>% ggplot(aes(x=PAID)) + geom_boxplot(color = "black",
+                 fill = "gray",
+                 bins = 20)
 ```
 
 ### (a)  Produce appropriate data summaries (i.e. a summary table and relevant visualization) of paid claims (`PAID`) and comment the shape, centre and spread of this distribution. 
 
+The median amount paid is 1042.345 with a range of $33112.06. The shape is unimodal with a strong right skew. 
 
 ### (b)  In this part, you will estimate the sampling distributions of sample *median* of paid claims by taking 1000 samples of size n=500 (to match the sample size in the data) and produce appropriate data summaries.
 
 #### (i) Fill in the values below to set up the simulation, based on what was specified in the question. The values you specify will be used to run the simulation in the next part of this question.
 
 ```{r}
-Q2b_n <- 1 # Replace 1 by your answer
-Q2b_repetitions <- 1 # Replace 1 by your answer
-Q2b_vector_for_simulated_values <- 1 # Replace 1 by your answer
+Q2b_n <- 500 # Replace 1 by your answer
+Q2b_repetitions <- 1000 # Replace 1 by your answer
+Q2b_vector_for_simulated_values <- rep(NA, 1000) # Replace 1 by your answer
 ```
 
 #### (ii) Run the code chunk below to generate the bootstrap samples, then create a histogram to visualize the estimated bootstrap sampling distribution.
@@ -200,7 +210,9 @@ sim <- tibble(median = sim)
 
 ```{r, fig.height=2}
 # Create your visualization here
-
+sim %>%  ggplot(aes(median)) + geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 15)
 ```
 
 
@@ -208,10 +220,10 @@ sim <- tibble(median = sim)
 
 ```{r, fig.height=2}
 # Example: suppose you wanted to calculate the median
-median <- quantile(boot_p$boot_p, p=0.5)
+median <- quantile(sim$median, p=0.5)
 
-Q2c_95_ci_lower_bound <- NULL
-Q2c_95_ci_upper_bound <- NULL
+Q2c_95_ci_lower_bound <- quantile(sim$median, p=0.05)
+Q2c_95_ci_upper_bound <- quantile(sim$median, p=0.85)
 ```
 
 
@@ -225,6 +237,8 @@ This is the opening of the article:
 >  "I observed kissing couples in public places (international airports, large railway stations, beaches and parks) in the United States, Germany and Turkey. The head-turning behaviour of each couple was recorded for a single kiss, with only the first being counted in instances of multiple kissing. The following criteria had to be met to qualify: lip contact, face-to-face positioning, no hand-held objects (as these might induce a side preference), and an obvious head-turning direction during kissing. Subjects' ages ranged from about 13–70 years.  
   
 >  Of 124 kissing pairs, 80 (64.5%) turned their heads to the right and 44 (35.5%) turned to the left."
+
+That's kinda creepy
 
 Here is a data frame with the data from the kissing study:
 ```{r}
