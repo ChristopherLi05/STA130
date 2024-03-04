@@ -1,0 +1,125 @@
+---
+title: "Week 8 Class Code"
+author: "Nathalie Moon and Josh Speagle"
+date: "2024-03-04"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(nycflights13)
+```
+
+
+
+# Code from class slides
+
+
+## NYC flights data
+```{r}
+# Extract flights from NY to SF, with no missing values
+SF <- 
+  flights %>% 
+  filter(dest=="SFO" & !is.na(arr_delay)) %>%
+  mutate(dep_time_min = (dep_time %/% 100) * 60 
+         + (dep_time %% 100))  # convert to minutes
+
+# Plot distribution of departure times, with a blue dot for the population mean
+SF %>% ggplot(aes(x=dep_time_min)) +
+  geom_histogram(binwidth=20) + 
+  labs(x="Departure Times (in minutes)", 
+       y="Number of Flights",
+       title="Distribution of Departure Times (NYC->SFO)") +
+  theme(text=element_text(size=18))
+```
+
+## k-means clustering
+```{r}
+# run k-means on the data
+k <- 5  # our guess for the number of clusters
+clustering <- kmeans(SF$dep_time_min, k)
+clustering
+
+# add clustering values to our original dataset
+SF <- 
+  SF %>%
+  mutate(cluster = clustering$cluster)
+
+# Plot distribution of departure times (facet_wrap)
+SF %>% ggplot(aes(x=dep_time_min)) +
+  geom_histogram(binwidth=20) + 
+  labs(x="Departure Times (in minutes)", 
+       y="Number of Flights",
+       title="Distribution of Departure Times (NYC->SFO)") +
+  theme(text=element_text(size=18)) + 
+  facet_wrap(~cluster)
+
+# Plot distribution of departure times (color)
+SF %>% ggplot(aes(x=dep_time_min, group=cluster, fill=cluster)) +
+  geom_histogram(binwidth=20) + 
+  labs(x="Departure Times (in minutes)", 
+       y="Number of Flights",
+       title="Distribution of Departure Times (NYC->SFO)") +
+  theme(text=element_text(size=18))
+
+# plot number of observations in each cluster
+SF %>%
+  ggplot() +
+  geom_bar(aes(x=cluster, group=cluster, fill=cluster)) + 
+  labs(x="Cluster", 
+       y="Number of Flights",
+       title="Distribution of Cluster Sizes") +
+  theme(text=element_text(size=18))
+```
+
+```{r}
+explained_ss <- rep(NA, 20)
+for(k in 1:20){
+  # run k-means on the data
+  clustering <- kmeans(SF$dep_time_min, k)
+  explained_ss[k] <- clustering$betweenss / clustering$totss
+}
+
+# Plot evolution of metric as a function of k
+ggplot() + 
+  aes(x=1:20, y=1-explained_ss) +
+  geom_line() + 
+  geom_point() +
+  labs(x="Number of Clusters", 
+       y="Remaining Variation",
+       title="K-Means Clustering Performance") +
+  theme(text=element_text(size=18))
+```
+
+```{r}
+# random simulation to establish a benchmark
+explained_ss_rand <- rep(NA, 20)
+for(k in 1:20){
+  # run k-means on the data
+  clustering <- kmeans(rnorm(length(SF$dep_time_min)), k)
+  explained_ss_rand[k] <- clustering$betweenss / clustering$totss
+}
+
+# compute normalized rates: the rate of change / remaining SS left to improve
+rate <- diff(explained_ss) / (1 - explained_ss[2:20])
+rate_rand <- diff(explained_ss_rand) / (1 - explained_ss_rand[2:20])
+
+# plot evolution of metric as a function of k
+ggplot() + 
+  geom_line(aes(x=2:20, y=rate, color="Observed Data")) + 
+  geom_point(aes(x=2:20, y=rate, color="Observed Data")) +
+  geom_line(aes(x=2:20, y=rate_rand, color="Random Baseline")) + 
+  geom_point(aes(x=2:20, y=rate_rand, color="Random Baseline")) +
+  labs(x="Number of Clusters", 
+       y="Fractional Improvement",
+       title="K-Means Clustering Performance") +
+  theme(text=element_text(size=18), legend.position="top") +
+  scale_color_manual(values=c("black", "red"), 
+                      labels=c("Observed Data", "Random Baseline"))
+
+```
