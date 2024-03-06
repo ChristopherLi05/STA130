@@ -134,7 +134,7 @@ anxiety_data %>% ggplot(aes(x=anxiety_score)) + geom_histogram(bins = 10) + face
 
 
 ```{r}
-Q1f_cluster_number_high_anxiety <- 1 # Replace NULL by 1 or 2
+Q1f_cluster_number_high_anxiety <- 2 # Replace NULL by 1 or 2
 Q1f_cluster_number_high_anxiety
 ```
 
