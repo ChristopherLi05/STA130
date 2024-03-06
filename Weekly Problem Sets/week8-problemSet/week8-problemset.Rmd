@@ -38,7 +38,7 @@ Some of the optional questions have tests in MarkUs, but you won't be penalized 
 ## IMPORTANT - SETUP
 ```{r}
 # Instructions for how students should define tests
-STUDENT_NUMBER <- 0;  # replace 0 by your real student number
+STUDENT_NUMBER <- 1010057028;  # replace 0 by your real student number
 ```
 
 
@@ -76,13 +76,17 @@ glimpse(anxiety_data)
 
 ```{r}
 # Create your summary and visualization(s) here
+anxiety_data %>% ggplot(aes(x=anxiety_score)) + geom_histogram(color = "black",
+                 fill = "gray",
+                 bins = 10)
 
+data <- anxiety_data %>% select(anxiety_score) %>% summarize(min = min(anxiety_score), mean = mean(anxiety_score), median = median(anxiety_score), max = max(anxiety_score))
 
 # Replace NULL by your answers below
-Q1a_min <- NULL
-Q1a_mean <- NULL
-Q1a_median <- NULL
-Q1a_max <- NULL
+Q1a_min <- data$min
+Q1a_mean <- data$mean
+Q1a_median <- data$median
+Q1a_max <- data$max
 ```
 
 
@@ -93,7 +97,7 @@ Q1a_max <- NULL
 set.seed(STUDENT_NUMBER) # DO NOT CHANGE THIS LINE
 
 # run k-means on the data
-clustering <- NULL
+clustering <- kmeans(anxiety_data$anxiety_score, 2)
 
 
 Q1b_clustering_object_type <- class(clustering) # DO NOT CHANGE THIS LINE
@@ -104,7 +108,7 @@ Q1b_clustering_object_type <- class(clustering) # DO NOT CHANGE THIS LINE
 
 ```{r}
 # Add cluster labels to our original anxiety_data tibble
-
+anxiety_data <- anxiety_data %>% mutate(cluster = clustering$cluster)
 
 
 Q1c_anxiety_data_with_cluster_variable <- anxiety_data; # DO NOT CHANGE THIS LINE OF CODE
@@ -114,12 +118,15 @@ Q1c_anxiety_data_with_cluster_variable <- anxiety_data; # DO NOT CHANGE THIS LIN
 
 ```{r}
 # Create your visualization here
+anxiety_data %>% ggplot(aes(x=anxiety_score, group=cluster, fill=cluster)) + geom_histogram(bins = 10)
 ```
 
 ### (e) Produce two histogram to visualize the two clusters you obtained above, using facet_wrap(). Hint: Look at the example on p42 of this week's slides.
 
 ```{r}
 # Create your visualizations here
+anxiety_data %>% ggplot(aes(x=anxiety_score)) + geom_histogram(bins = 10) + facet_wrap(~cluster)
+
 ```
 
 ### (f) Based on your visualizations in the two parts above, comment on the clusters you obtained.  Do the clusters appear to represent two distinct groups of anxiety scores? Replace NULL by the number of the cluster which has higher anxiety scores.
@@ -127,7 +134,7 @@ Q1c_anxiety_data_with_cluster_variable <- anxiety_data; # DO NOT CHANGE THIS LIN
 
 
 ```{r}
-Q1f_cluster_number_high_anxiety <- NULL # Replace NULL by 1 or 2
+Q1f_cluster_number_high_anxiety <- 1 # Replace NULL by 1 or 2
 Q1f_cluster_number_high_anxiety
 ```
 
@@ -138,15 +145,14 @@ Q1f_cluster_number_high_anxiety
 
 In the anxiety data from Question 1, in addition to anxiety scores each person is also characterized as having a
 "Low" (less than 2 hours/day) or "High" (more than 2 hours/day) level of social media usage. In HW5, you conducted
-a 2-sample hypothesis test to investigate whether the median anxiety was different for "Low" and "High" social media users, but it's 
-not clear why 2 hours was used as the cutoff.  In this question, you'll compare the "High" vs "Low" grouping to the 
+a 2-sample hypothesis test to investigate whether the median anxiety was different for "Low" and "High" social media users, but it's not clear why 2 hours was used as the cutoff.  In this question, you'll compare the "High" vs "Low" grouping to the 
 groupings we got from clustering the data in the previous question.
 
 ### (a) You might be wondering if people who spend more time on social media have higher anxiety than those who spend less time on social media.  Here, you'll calculate the agreement between the "High" and "Low" levels of social media usage and the clusters we obtained in the previous question. Add a new variable called "categories_agree" to the `anxiety_data` tibble which takes the value TRUE if the individual is in the high social media usage AND high anxiety cluster or if they are in the low social media usage group and low anxiety group
 
 ```{r}
 anxiety_data <- anxiety_data %>% 
-  mutate(categories_agree = FALSE)  # Replace FALSE by an expression to correctly
+  mutate(categories_agree = as.logical((social_media_usage == "High") ^ (cluster == 2)))  # Replace FALSE by an expression to correctly
 # calculate the values of this variable
 
 
