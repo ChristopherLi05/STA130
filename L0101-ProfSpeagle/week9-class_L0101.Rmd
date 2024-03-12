@@ -1,0 +1,53 @@
+---
+title: "Week 9 Class Code"
+author: "Nathalie Moon and Josh Speagle"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+```{r}
+library(tidyverse)
+library(rpart)
+library(partykit)
+library(NHANES)
+```
+
+
+
+# Code from class slides
+
+```{r}
+NHANES <- read_csv("NHANES_data.csv")
+NHANES %>% 
+  select(Age, Race3, Work, DaysMentHlthBad, DaysPhysHlthBad,
+         Depressed, SleepHrsNight, SleepTrouble) %>%
+  glimpse()
+
+
+# Need to run library(rpart) to fit a tree
+tree <- rpart(SleepTrouble ~ SleepHrsNight + DaysPhysHlthBad, data = NHANES)
+# Need to run library(partykit) to plot the tree
+# Below are two different ways of visualizing the same tree
+plot(as.party(tree), gp=gpar(cex=1), type = "simple")
+plot(as.party(tree), gp=gpar(cex=1), type = "extended")
+
+
+# Get additional rows of data to run through our tree
+new_NHANES <- NHANES::NHANES[9001:10000,] %>% 
+  select(Age, Race3, Work, DaysMentHlthBad, DaysPhysHlthBad,
+         Depressed, SleepHrsNight, SleepTrouble)
+glimpse(new_NHANES)
+
+predictions <- predict(tree, newdata=new_NHANES, type="class")
+predictions %>% head(n=20)
+
+
+confusion_matrix <- table(predictions, new_NHANES$SleepTrouble)
+confusion_matrix
+
+```
+
