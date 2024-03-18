@@ -103,7 +103,7 @@ processors %>% group_by(unit_type) %>% summarize(r = cor(year, log_transistors))
 # Your answers should be simple numbers (you can type the numbers, rounded
 # to 2 decimals)
 Q1f_CPU_correlation <- 0.95
-Q1f_CPU_correlation <- 0.97
+Q1f_GPU_correlation <- 0.97
 ```
 
 ### (g) Write down a simple linear regression model to predict log number of transistors in a processor based on the year it was introduced.  Be sure to explain each term in the model. 
