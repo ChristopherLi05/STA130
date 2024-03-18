@@ -1,0 +1,46 @@
+---
+title: "R Code for class - Week 10 Simple Linear Regression"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(tidyverse)
+```
+
+
+# Code from the slides
+
+```{r}
+heights <- read_csv("heights.csv")
+glimpse(heights)
+
+heights %>% ggplot(aes(x=shoePrint, y=height)) +
+  geom_point()
+
+cor(x = heights$shoePrint,
+    y = heights$height)
+
+model1 <- lm(height ~ shoePrint, data=heights)
+summary(model1)$coefficients
+
+heights %>% ggplot(aes(x=shoePrint, y=height)) +
+  geom_point() +
+  labs(x = "Length of shoeprint (in cm)",
+       y = "Height (in cm)") +
+  geom_smooth(method="lm", se=FALSE) +
+  theme_minimal()
+
+summary(model1)$r.squared
+
+cor(x = heights$shoePrint, y = heights$height)^2
+
+
+heights %>% group_by(sex) %>%
+  summarise(n = n())
+
+model2 <- lm(height ~ sex, data = heights)
+summary(model2)$coefficients
+```
+
+
