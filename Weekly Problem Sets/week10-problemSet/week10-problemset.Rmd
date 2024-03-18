@@ -55,7 +55,7 @@ glimpse(processors)
 ### (a) Create an appropriate plot for the number of transistors per year, faceted by `unit_type`. In other words, create two scatterplots, one for each value of the `unit_type` variable.
 
 ```{r}
-
+processors %>% ggplot(aes(x=year, y=transistor_count)) + geom_point() + facet_wrap(~unit_type)
 
 ```
 
@@ -63,7 +63,7 @@ glimpse(processors)
 ### (b) Do you believe it is appropriate to fit a straight line through this plot as it is displayed? Replace NULL by your answer ("Yes" or "No") and write a sentence explaining your answer.
 
 ```{r}
-Q1b_is_straight_line_model_appropriate <- NULL
+Q1b_is_straight_line_model_appropriate <- "No"
 ```
 
 
@@ -73,7 +73,7 @@ Q1b_is_straight_line_model_appropriate <- NULL
 ```{r}
 # Replace NA by the correct expression in the code below
 Q1c_updated_processors_tibble <- processors %>% 
-  mutate(log_transistors = NA)
+  mutate(log_transistors = log(transistor_count))
 
 processors <- Q1c_updated_processors_tibble # DO NOT CHANGE THIS LINE
 ```
@@ -84,7 +84,7 @@ processors <- Q1c_updated_processors_tibble # DO NOT CHANGE THIS LINE
 Note: You will learn more about transforming variables in future courses and are not required to be able to explain why we've done this here. You can just treat `log_transistors` as we have other variables in class and refer to it as "the log number of transistors".
 
 ```{r}
-
+processors %>% ggplot(aes(x=year, y=log_transistors)) + geom_point() + facet_wrap(~unit_type)
 ```
 
 
@@ -92,18 +92,23 @@ Note: You will learn more about transforming variables in future courses and are
 
 ### (e) Before calculating anything, do you think the correlation is stronger between log transistor count and year for GPUs or CPUs? Justify your answer.
 
+I think the correlation in CPU count is much better. The graph in GPU count is slightly wavy and fans out in the end. The graph in the CPU count, on the other hand, pretty constrained outside of some data points. 
+
 
 ### (f) Calculate the correlation between `log_transistors` and `year` for CPUs and GPUs. You may find `group_by()`, `summarise()` and `cor()` to be helpful functions.  Replace NULL by your answers (you can read them off the summary table), rounded to 2 decimal places.
 
 ```{r}
+processors %>% group_by(unit_type) %>% summarize(r = cor(year, log_transistors))
+
 # Your answers should be simple numbers (you can type the numbers, rounded
 # to 2 decimals)
-Q1f_CPU_correlation <- NULL
-Q1f_CPU_correlation <- NULL
-
+Q1f_CPU_correlation <- 0.95
+Q1f_CPU_correlation <- 0.97
 ```
 
 ### (g) Write down a simple linear regression model to predict log number of transistors in a processor based on the year it was introduced.  Be sure to explain each term in the model. 
+
+$$\log(y) = 0.3357 x - 654.4899$$
 
 Hint: If you copy math equations from another software into your .Rmd document, you'll get errors when trying to knit.  Instead, you should type your math equations directly in your .Rmd document. Here are some tips and examples for doing this:
 
@@ -119,20 +124,23 @@ $$\hat{y} = \hat{\beta}_0 + \hat{\beta}_1$$
 
 ### (h) State the null and alternative hypotheses you would use assess whether year is a useful predictor of the log number of transistors in this linear regression model.
 
+H_0: R^2 <= 0.5
+H_a: R^2 > 0.5
 
 ### (i) Restrict your data to CPUs and use R to fit the linear model that corresponds with your line of best fit above. Report the fitted equation of the line. Interpret the regression coefficients in the context of this data AND make a conclusion about the hypotheses you defined above.
 
 ```{r}
-
+summary(lm(log_transistors ~ year, processors %>% filter(unit_type == "CPU")))$r.square
 ```
  
 
 ### (j) Briefly explain why or why not the interpretation of the intercept is helpful for understanding Moore's Law.
 
+The interpretation isn't very helpful since we are using a log model. 
 
 ### (k) Extract the $R^2$ for your model, and write one sentence interpreting it in context.  
 
-
+0.8989549
 
 
 \newpage
@@ -149,17 +157,18 @@ glimpse(starbucksdata)
 ### (a)  Produce a plot that shows the association between carbohydrates and calories in Starbucks menu items. Describe this association.
 
 ```{r}
-
+starbucksdata %>% ggplot(aes(x=carb, y=calories)) + geom_point()
 ```
 
 
 ### (b) Before calculating anything, estimate the correlation coefficient between carbohydrates and calorie content in Starbucks menu items based on the plot you produced in (a). Justify your answer.
 
+The correlation  coefficient is most likely very low. 
 
 ### (c) Calculate the correlation between carbohydrate and calorie content of Starbucks menu items. How does this compare to your estimate in part (b)? 
 
 ```{r}
-
+cor(starbucksdata$carb, starbucksdata$calories)
 ```
 
 ### (d) Write down a simple linear regression model to predict calories based on carbohydrate content of Starbucks menu items.  Be sure to explain each term in the model. 
